@@ -3,198 +3,435 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Sorpresa para Mi esposita</title>
+  <title>Sorpresa - Mi Esposita</title>
   <style>
-    :root{--bg:#0f172a;--card:#0b1220;--accent:#f59e0b;--muted:#94a3b8}
-    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:#e6eef8;background:linear-gradient(160deg,var(--bg),#071126);}
-    .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:32px}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:28px;border-radius:16px;max-width:720px;width:100%;box-shadow:0 8px 30px rgba(2,6,23,0.7)}
-    h1{margin:0 0 8px;font-size:26px}
-    p.lead{color:var(--muted);margin-top:0}
-    .choices{display:flex;flex-direction:column;gap:12px;margin-top:18px}
-    button.opt{background:transparent;border:2px solid rgba(255,255,255,0.06);padding:12px 16px;border-radius:10px;text-align:left;color:#e6eef8;font-weight:600;cursor:pointer}
-    button.opt:hover{border-color:var(--accent);transform:translateY(-2px)}
-    .small{font-size:13px;color:var(--muted)}
-    .back{margin-top:12px;background:none;border:0;color:var(--muted);cursor:pointer}
-    .gift{margin-top:18px;padding:16px;border-radius:12px;background:rgba(255,255,255,0.02);text-align:center}
-    .confetti{position:fixed;left:0;right:0;top:0;bottom:0;pointer-events:none}
-    img.gift-img {
-      max-width: 100%;
-      border-radius: 10px;
-      margin-top: 12px;
-      filter: blur(20px);              /* empieza borrosa */
-      transition: filter 5s ease-out;  /* animación de 5 segundos */
+    :root{
+      --card-bg: rgba(0,0,0,0.66);
+      --muted: #cbd5e1;
+      --accent: #f59e0b;
+      --danger: #ef4444;
     }
-    img.gift-img.reveal {
-      filter: blur(0px);               /* termina nítida */
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;background:#071126;color:#e6eef8}
+    .stage{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      position:relative;
+      overflow:hidden;
     }
-    footer{margin-top:18px;color:var(--muted);font-size:13px}
+
+    /* fondo del regalo (cubrir pantalla) */
+    #gift-bg {
+      position: fixed;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      filter: blur(25px);
+      transition: filter 5s ease-out, opacity 1s ease-in;
+      opacity: 0;
+      z-index:1;
+    }
+    #gift-bg.reveal{filter: blur(0); opacity: 1;}
+
+    .card {
+      width:100%;
+      max-width:780px;
+      padding:22px;
+      border-radius:14px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.60), rgba(0,0,0,0.70));
+      box-shadow: 0 10px 40px rgba(2,6,23,0.7);
+      position:relative;
+      z-index:2;
+    }
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    header h1{font-size:20px;margin:0}
+    header p.small{margin:0;color:var(--muted);font-size:13px}
+
+    .lives{font-size:18px}
+    .story{margin-top:18px;font-size:16px;line-height:1.45;color:#e6eef8}
+    .options{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+    .opt{
+      background:transparent;
+      border:2px solid rgba(255,255,255,0.06);
+      padding:12px 14px;
+      border-radius:10px;
+      text-align:left;
+      color:#e6eef8;
+      font-weight:700;
+      cursor:pointer;
+      transition:transform .12s ease, border-color .12s;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .opt:hover{transform:translateY(-3px);border-color:var(--accent)}
+    .opt span.emoji{font-size:20px}
+    .footer{margin-top:18px;color:var(--muted);font-size:13px}
+
+    /* modal fallo / reinicio */
+    .modal {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+      min-width:260px;
+      max-width:90%;
+      background: rgba(2,6,23,0.95);
+      border-radius:12px;
+      padding:18px;
+      box-shadow: 0 8px 30px rgba(2,6,23,0.8);
+      z-index:999;
+      display:none;
+    }
+    .modal.show{display:block}
+    .modal h3{margin:0 0 8px}
+    .modal p{margin:0 0 12px;color:var(--muted)}
+    .btn {padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+    .btn.primary{background:var(--accent);color:#081126}
+    .btn.ghost{background:transparent;border:2px solid rgba(255,255,255,0.06);color:#e6eef8}
+
+    /* confetti canvas full screen */
+    canvas.confetti{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:999}
+
+    /* texto final grande */
+    .final-title{font-size:24px;margin:8px 0}
+    @media (max-width:520px){
+      header h1{font-size:18px}
+      .story{font-size:15px}
+      .final-title{font-size:20px}
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <main class="card" id="app">
+  <div id="gift-bg" aria-hidden="true"></div>
+
+  <main class="stage" role="main">
+    <section class="card" aria-live="polite">
       <header>
-        <h1 id="title">¡Feliz cumpleaños, Mi esposita!</h1>
-        <p class="lead" id="subtitle">Bienvenida a tu aventura sorpresa… cada elección te acerca a tu regalo.</p>
+        <div>
+          <h1>¡Feliz cumpleaños, <span id="name">Mi Esposita</span>! 🎉</h1>
+          <p class="small">Elige sabiamente — algunas elecciones son trampas encantadoras.</p>
+        </div>
+        <div class="lives" aria-hidden="false">Vidas: <span id="hearts">❤️❤️</span></div>
       </header>
-      <section id="scene" aria-live="polite"></section>
-      <footer>
-        <p class="small">Creado con cariño. 💖</p>
-      </footer>
-    </main>
+
+      <article class="story" id="story">Cargando aventura…</article>
+
+      <div class="options" id="options" role="list"></div>
+
+      <div class="footer">No hay pistas. Sólo coraje y caprichos. 😉</div>
+    </section>
+  </main>
+
+  <!-- modal para finales / reinicios -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true">
+    <h3 id="modal-title">Oh no...</h3>
+    <p id="modal-msg">Mensaje</p>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn ghost" id="modal-retry">Reintentar</button>
+    </div>
   </div>
-  <canvas class="confetti" id="confettiCanvas"></canvas>
+
+  <!-- canvas confetti -->
+  <canvas id="cconf" class="confetti" aria-hidden="true"></canvas>
 
   <script>
-    const CONFIG = {
-      birthdayName: 'Mi esposita',
-      startTitle: 'Una Aventura para {name}',
-      startSubtitle: 'Cada decisión te acerca a tu regalo…',
-      coverImage: '',
-      scenes: {
-        start: {
-          text: 'Hoy es un día especial… encuentras una nota que dice: “Sigue las pistas, y al final viajarás”. ¿Qué haces primero?',
-          choices:[
-            {text:'Leer la nota', to:'nota'},
-            {text:'Salir al salón', to:'salon'}
-          ]
-        },
-        nota: {
-          text: 'La nota dice: “Donde el sol besa las pirámides, ahí te espera tu destino”. ¿Hacia dónde vas?',
-          choices:[
-            {text:'Buscar fotos del viaje', to:'fotos'},
-            {text:'Salir al balcón', to:'balcon'}
-          ]
-        },
-        salon: {
-          text: 'En el salón ves un mapa de Egipto en la mesa. Pareciera una pista…',
-          choices:[
-            {text:'Estudiar el mapa', to:'mapa'},
-            {text:'Regresar y leer nota', to:'nota'}
-          ]
-        },
-        fotos: {
-          text: 'Ves fotos hermosas del desierto, el Nilo, las pirámides… el viaje soñado. Pero aún no es el momento. Sigues buscando.',
-          choices:[
-            {text:'Regresar al salón', to:'salon'},
-            {text:'Volver al inicio', to:'start'}
-          ]
-        },
-        mapa: {
-          text: 'Según el mapa, debes ir al lugar más alto del balcón… ahí estará la sorpresa.',
-          choices:[
-            {text:'Ir al balcón', to:'balcon'},
-            {text:'Seguir buscando en casa', to:'salon'}
-          ]
-        },
-        balcon: {
-          text: 'En el balcón, entre flores y estrellas, aparece una imagen mágica...',
-          choices:[
-            {text:'Ver el regalo', to:'final'}
-          ]
-        },
-        final: {
-          text: '¡Sorpresa! Este viaje a Egipto es tu regalo: templos, desiertos, el Nilo y aventuras contigo. 🎉',
-          choices:[]
-        }
+    /***************************
+     * Recursos de audio (libres)
+     * He usado enlaces públicos de Pixabay como ejemplos.
+     * Nota: en navegadores, la reproducción con sonido requiere interacción del usuario.
+     ***************************/
+    const AUDIO = {
+      mystery: new Audio('https://cdn.pixabay.com/download/audio/2021/10/07/audio_5c6f0a6b4a.mp3?filename=dramatic-ambient-112525.mp3'), // loop
+      fail: new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_6c1a4f7f1e.mp3?filename=incorrect-18966.mp3'), // fail beep
+      success: new Audio('https://cdn.pixabay.com/download/audio/2021/12/11/audio_87f53d3f96.mp3?filename=tada-1-6296.mp3') // success
+    };
+    AUDIO.mystery.loop = true;
+
+    // Background image (Unsplash atardecer pirámides - URL con parámetros)
+    const GIFT_IMAGE_URL = 'https://images.unsplash.com/photo-1613932534449-3d1cc403a53a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80';
+
+    /***************************
+     * Juego: nodos, estado y lógica
+     ***************************/
+    const NODES = {
+      start: {
+        text: `Mi Esposita 💖, hoy empieza tu aventura de cumpleaños. Cada decisión te acerca (o te aleja) de tu verdadero regalo. ¿Lista?`,
+        options: [
+          { emoji: '🎶', text: 'Un concierto íntimo', next: 'node1', correct: true },
+          { emoji: '🍫', text: 'Una caja gigante de bombones', next: 'fail_chocolate', correct: false }
+        ]
       },
-      finalMessage: 'Mi esposita, este viaje es para ti. ¡Feliz cumpleaños! 🌍',
-      giftImage: 'https://images.unsplash.com/photo-1613932534449-3d1cc403a53a'
-    }
+      fail_chocolate: {
+        text: `Los bombones eran tan deliciosos que te quedaste dormida con una sonrisa. 😴🍫`,
+        fail: true
+      },
 
-    function t(s){ return s.replace(/{name}/g, CONFIG.birthdayName) }
-    document.getElementById('title').innerText = t(CONFIG.startTitle)
-    document.getElementById('subtitle').innerText = t(CONFIG.startSubtitle)
-    const sceneEl = document.getElementById('scene')
+      node1: {
+        text: `Llegas a un escenario mágico: a tu izquierda hay mimo y calma, a la derecha algo que te eleva. ¿Cuál eliges?`,
+        options: [
+          { emoji: '💆', text: 'Masaje de lujo', next: 'fail_masaje', correct: false },
+          { emoji: '🎈', text: 'Paseo en globo', next: 'node2', correct: true }
+        ]
+      },
+      fail_masaje: {
+        text: `El masaje fue tan perfecto que te convertiste en estatua de gelatina. 💆‍♀️🤣 ¡Inmóvil de felicidad!`,
+        fail: true
+      },
 
-    function render(id){
-      const scene = CONFIG.scenes[id]
-      sceneEl.innerHTML = ''
-      const p = document.createElement('p')
-      p.className = 'small'
-      p.innerText = scene.text
-      sceneEl.appendChild(p)
+      node2: {
+        text: `El globo te deja en un bazar misterioso. Dos cajas: una perfuma el aire, la otra susurra secretos. ¿Cuál abres?`,
+        options: [
+          { emoji: '🧴', text: 'Perfume árabe', next: 'fail_perfume', correct: false },
+          { emoji: '✉️', text: 'Un sobre misterioso', next: 'node3', correct: true }
+        ]
+      },
+      fail_perfume: {
+        text: `El perfume era tan potente que hasta los camellos se pusieron las patas en la oreja. 🐪💨`,
+        fail: true
+      },
 
-      if(id==='start' && CONFIG.coverImage){
-        const img = document.createElement('img')
-        img.className = 'cover'
-        img.src = CONFIG.coverImage
-        sceneEl.appendChild(img)
+      node3: {
+        text: `Dentro del sobre hay dos experiencias extremas. Escoge con valentía.`,
+        options: [
+          { emoji: '🪂', text: 'Saltarte en paracaídas', next: 'fail_paracaidas', correct: false },
+          { emoji: '🦁', text: 'Safari en jeep', next: 'node4', correct: true }
+        ]
+      },
+      fail_paracaidas: {
+        text: `Saltaste en paracaídas, pero el instructor te entregó un paraguas en su lugar. ☂️😱`,
+        fail: true
+      },
+
+      node4: {
+        text: `El safari llega a un cruce: objetos tentadores aparecen. ¿Qué eliges?`,
+        options: [
+          { emoji: '🎤', text: 'Micrófono para crear contenido', next: 'fail_micro', correct: false },
+          { emoji: '✈️', text: 'Tomar un avión privado', next: 'success', correct: true }
+        ]
+      },
+      fail_micro: {
+        text: `Usaste el micrófono y ahora un gallo es tu compañero de dúo. 🐓🎤 Fuiste viral, pero no encontraste el regalo.`,
+        fail: true
+      },
+
+      success: {
+        text: `¡Lo lograste! El avión privado despega y el destino aparece en la pantalla: 🌅 **EGIPTO** 🌅\n\nMi Esposita, tu regalo es un viaje a las pirámides. ✨🎁`,
+        success: true
       }
+    };
 
-      const choices = document.createElement('div')
-      choices.className = 'choices'
-      scene.choices.forEach(c => {
-        const b = document.createElement('button')
-        b.className = 'opt'
-        b.innerText = c.text
-        b.addEventListener('click', () => render(c.to))
-        choices.appendChild(b)
-      })
-      sceneEl.appendChild(choices)
+    // Estado del juego
+    let state = {
+      current: 'start',
+      lives: 2,
+      startedSound: false
+    };
 
-      if(scene.choices.length === 0){
-        const gift = document.createElement('div')
-        gift.className = 'gift'
-        const msg = document.createElement('div')
-        msg.innerHTML = `<strong>${t(CONFIG.finalMessage)}</strong><p class="small">${scene.text}</p>`
-        gift.appendChild(msg)
-        if(CONFIG.giftImage){
-          const img = document.createElement('img')
-          img.className = 'gift-img'
-          img.src = CONFIG.giftImage
-          gift.appendChild(img)
-          // activar desenfoque progresivo
-          setTimeout(() => img.classList.add('reveal'), 100)
+    // Elementos DOM
+    const storyEl = document.getElementById('story');
+    const optionsEl = document.getElementById('options');
+    const heartsEl = document.getElementById('hearts');
+    const giftBg = document.getElementById('gift-bg');
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalMsg = document.getElementById('modal-msg');
+    const modalRetry = document.getElementById('modal-retry');
+    const confCanvas = document.getElementById('cconf');
+
+    // iniciar render
+    function renderNode(key){
+      state.current = key;
+      const node = NODES[key];
+      // update story
+      storyEl.textContent = node.text;
+      // clear options
+      optionsEl.innerHTML = '';
+      // if node has options
+      if(node.options && node.options.length){
+        node.options.forEach(opt => {
+          const b = document.createElement('button');
+          b.className = 'opt';
+          b.setAttribute('role','button');
+          b.innerHTML = `<span class="emoji">${opt.emoji}</span><span>${opt.text}</span>`;
+          b.addEventListener('click', () => onChoose(opt));
+          optionsEl.appendChild(b);
+        });
+      } else {
+        // no options = terminal node (fail or success)
+        if(node.fail){
+          // handle fail node as losing one life
+          handleFail(node.text);
+        } else if(node.success){
+          handleSuccess(node.text);
         }
-        sceneEl.appendChild(gift)
-        launchConfetti()
-      }
-
-      if(id !== 'start'){
-        const back = document.createElement('button')
-        back.className = 'back'
-        back.innerText = '← Volver'
-        back.addEventListener('click', () => render('start'))
-        sceneEl.appendChild(back)
       }
     }
 
-    function launchConfetti(){
-      const canvas = document.getElementById('confettiCanvas')
-      const ctx = canvas.getContext('2d')
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-      const pieces = []
-      const colors = ['#f59e0b','#f97316','#fb923c','#fde68a','#fff']
-      for(let i=0;i<130;i++){
-        pieces.push({ x: Math.random()*canvas.width, y: Math.random()*-canvas.height, vy:2+Math.random()*4, angle:Math.random()*360, r:2+Math.random()*6, c: colors[Math.floor(Math.random()*colors.length)] })
+    // when an option is chosen
+    function onChoose(opt){
+      // start music on first interaction
+      if(!state.startedSound){
+        try { AUDIO.mystery.play().catch(()=>{}); } catch(e) {}
+        state.startedSound = true;
       }
-      let tcount = 0
+      // proceed to node
+      const next = opt.next;
+      // if option is marked correct or not, we still follow flow: incorrect nodes are designated fail nodes
+      renderNode(next);
+    }
+
+    // handle failure nodes: reduce life, play fail sound, show modal with message and retry button
+    function handleFail(text){
+      // play fail sound
+      try { AUDIO.fail.currentTime = 0; AUDIO.fail.play().catch(()=>{}); } catch(e){}
+      state.lives = Math.max(0, state.lives - 1);
+      updateLives();
+
+      const msg = text + (state.lives > 0 ? `\n\nTe quedan ${state.lives} vida(s).` : `\n\nYa no te quedan vidas.`);
+      showModal('¡Vaya! 😅', msg, () => {
+        // if still has lives, just return to start OR allow retry?
+        if(state.lives > 0){
+          // let player decide to retry same start or restart whole? Per spec, show reinicio button — we will let them restart from start.
+          closeModal();
+          // go to start (as per spec: when choose a bad path they lose and must restart)
+          resetToStart();
+        } else {
+          // no lives: reset lives and restart
+          closeModal();
+          resetGameFull();
+        }
+      });
+    }
+
+    // handle success node
+    function handleSuccess(text){
+      // stop mystery music and play success music
+      try { AUDIO.mystery.pause(); AUDIO.success.currentTime = 0; AUDIO.success.play().catch(()=>{}); } catch(e){}
+      // show final story text bigger
+      storyEl.innerHTML = `<div class="final-title">¡Destino desbloqueado!</div><div style="white-space:pre-line">${text}</div>`;
+      optionsEl.innerHTML = '';
+      // reveal background (image) and confetti
+      giftBg.style.backgroundImage = `url('${GIFT_IMAGE_URL}')`;
+      setTimeout(()=> {
+        giftBg.classList.add('reveal');
+        // reveal the final message card (fade) - we already set story
+        startConfetti();
+      }, 120);
+      // also show a single button to "volver a jugar" beneath
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      btn.innerHTML = `<span class="emoji">🔁</span><span>Jugar de nuevo</span>`;
+      btn.addEventListener('click', () => {
+        // stop confetti and success sound, restart music
+        stopConfetti();
+        resetGameFull();
+      });
+      optionsEl.appendChild(btn);
+    }
+
+    // update hearts UI
+    function updateLives(){
+      const hearts = '❤️'.repeat(state.lives) + (state.lives < 2 ? '🤍'.repeat(2 - state.lives) : '');
+      heartsEl.textContent = hearts;
+    }
+
+    // reset to start (keep remaining lives)
+    function resetToStart(){
+      // return to start node (no lives reset)
+      renderNode('start');
+    }
+
+    // full reset of game (lives reset)
+    function resetGameFull(){
+      state.lives = 2;
+      updateLives();
+      // reset background and confetti
+      giftBg.classList.remove('reveal');
+      stopConfetti();
+      // restart mystery music
+      try { AUDIO.success.pause(); AUDIO.success.currentTime = 0; } catch(e){}
+      try { AUDIO.mystery.currentTime = 0; /* will play when user clicks next */ } catch(e){}
+      state.startedSound = false;
+      renderNode('start');
+    }
+
+    // modal helpers
+    function showModal(title, msg, onRetry){
+      modalTitle.textContent = title;
+      modalMsg.textContent = msg;
+      modal.classList.add('show');
+      modalRetry.onclick = () => { if(onRetry) onRetry(); };
+    }
+    function closeModal(){ modal.classList.remove('show'); }
+
+    modalRetry.addEventListener('click', closeModal);
+
+    /***************************
+     * Confetti (simple canvas)
+     ***************************/
+    let confettiInterval = null;
+    const confettiPieces = [];
+    function startConfetti(){
+      const canvas = confCanvas;
+      const ctx = canvas.getContext('2d');
+      function resize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+      resize();
+      window.addEventListener('resize', resize);
+      // generate pieces
+      confettiPieces.length = 0;
+      const colors = ['#f59e0b','#f97316','#fb923c','#fde68a','#ffffff'];
+      for(let i=0;i<140;i++){
+        confettiPieces.push({ x: Math.random()*canvas.width, y: Math.random()*-canvas.height, vy:2+Math.random()*4, angle:Math.random()*360, r:2+Math.random()*7, c: colors[Math.floor(Math.random()*colors.length)] });
+      }
+      let t = 0;
       function frame(){
-        tcount++
-        ctx.clearRect(0,0,canvas.width,canvas.height)
-        pieces.forEach(p => {
-          p.x += Math.sin((p.y + tcount)/20)*1.5
-          p.y += p.vy
-          ctx.fillStyle = p.c
-          ctx.save()
-          ctx.translate(p.x, p.y)
-          ctx.rotate((p.angle + tcount/3) * Math.PI/180)
-          ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r*1.6)
-          ctx.restore()
-          if(p.y > canvas.height + 20){
-            p.y = -20
-            p.x = Math.random() * canvas.width
-          }
-        })
-        if(tcount < 800) requestAnimationFrame(frame)
+        t++;
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        confettiPieces.forEach(p=>{
+          p.x += Math.sin((p.y + t)/20)*1.5;
+          p.y += p.vy;
+          ctx.fillStyle = p.c;
+          ctx.save();
+          ctx.translate(p.x,p.y);
+          ctx.rotate((p.angle + t/3)*Math.PI/180);
+          ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*1.6);
+          ctx.restore();
+          if(p.y > canvas.height + 20){ p.y = -20; p.x = Math.random()*canvas.width; }
+        });
+        confettiInterval = requestAnimationFrame(frame);
       }
-      frame()
+      confettiInterval = requestAnimationFrame(frame);
+    }
+    function stopConfetti(){
+      if(confettiInterval) cancelAnimationFrame(confettiInterval);
+      const ctx = confCanvas.getContext('2d');
+      ctx.clearRect(0,0,confCanvas.width,confCanvas.height);
     }
 
-    render('start')
+    /***************************
+     * Initialization
+     ***************************/
+    // set name if wanted (keeps "Mi Esposita" by default)
+    document.getElementById('name').textContent = 'Mi Esposita';
+
+    updateLives();
+    renderNode('start');
+
+    // Accessibility: allow numeric keys 1/2 to pick first/second option
+    document.addEventListener('keydown', (e) => {
+      const opts = Array.from(optionsEl.querySelectorAll('.opt'));
+      if(opts.length && (e.key === '1' || e.key === '2')){
+        const idx = e.key === '1' ? 0 : 1;
+        const btn = opts[idx];
+        if(btn) btn.click();
+      }
+    });
+
+    // When modal is open, clicking outside should close? keep simple: only retry button closes
   </script>
 </body>
 </html>
