@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Sorpresa de cumpleaños</title>
+  <title>Sorpresa para Mi esposita</title>
   <style>
     :root{--bg:#0f172a;--card:#0b1220;--accent:#f59e0b;--muted:#94a3b8}
     html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:#e6eef8;background:linear-gradient(160deg,var(--bg),#071126);}
@@ -16,11 +16,18 @@
     button.opt:hover{border-color:var(--accent);transform:translateY(-2px)}
     .small{font-size:13px;color:var(--muted)}
     .back{margin-top:12px;background:none;border:0;color:var(--muted);cursor:pointer}
-    .hidden{display:none}
-    .center{display:flex;align-items:center;gap:12px}
-    .gift{margin-top:18px;padding:16px;border-radius:12px;background:rgba(255,255,255,0.02)}
+    .gift{margin-top:18px;padding:16px;border-radius:12px;background:rgba(255,255,255,0.02);text-align:center}
     .confetti{position:fixed;left:0;right:0;top:0;bottom:0;pointer-events:none}
-    img.cover{width:100%;height:auto;border-radius:10px;margin-top:12px}
+    img.gift-img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-top: 12px;
+      filter: blur(20px);              /* empieza borrosa */
+      transition: filter 5s ease-out;  /* animación de 5 segundos */
+    }
+    img.gift-img.reveal {
+      filter: blur(0px);               /* termina nítida */
+    }
     footer{margin-top:18px;color:var(--muted);font-size:13px}
   </style>
 </head>
@@ -28,12 +35,12 @@
   <div class="wrap">
     <main class="card" id="app">
       <header>
-        <h1 id="title">¡Feliz cumpleaños!</h1>
-        <p class="lead" id="subtitle">Has sido convocada a una aventura muy especial... elige con cuidado.</p>
+        <h1 id="title">¡Feliz cumpleaños, Mi esposita!</h1>
+        <p class="lead" id="subtitle">Bienvenida a tu aventura sorpresa… cada elección te acerca a tu regalo.</p>
       </header>
       <section id="scene" aria-live="polite"></section>
       <footer>
-        <p class="small">Sorpresa creada con ❤️ — ¡no compartas el enlace si quieres mantener la sorpresa!</p>
+        <p class="small">Creado con cariño. 💖</p>
       </footer>
     </main>
   </div>
@@ -41,32 +48,65 @@
 
   <script>
     const CONFIG = {
-      birthdayName: 'María',
+      birthdayName: 'Mi esposita',
       startTitle: 'Una Aventura para {name}',
-      startSubtitle: 'Cada elección te acerca (o te aleja) de tu regalo... sigue tu intuición.',
+      startSubtitle: 'Cada decisión te acerca a tu regalo…',
       coverImage: '',
       scenes: {
         start: {
-          text: 'Es la mañana de tu cumpleaños. Entra una nota: "Para encontrar tu regalo, sigue las pistas y elige sabiamente." ¿Qué haces primero?',
-          choices:[{text:'Investigar la nota', to:'nota'},{text:'Ir a la cocina a desayunar', to:'cocina'},{text:'Llamar a una amiga', to:'llamada'}]
+          text: 'Hoy es un día especial… encuentras una nota que dice: “Sigue las pistas, y al final viajarás”. ¿Qué haces primero?',
+          choices:[
+            {text:'Leer la nota', to:'nota'},
+            {text:'Salir al salón', to:'salon'}
+          ]
         },
-        nota:{ text:'La nota tiene un acertijo: "Donde cantan las tazas, y el reloj da las horas, ahí está la pista". ¿Dónde buscas?', choices:[{text:'En la cocina', to:'cocina'},{text:'En el salón junto al reloj', to:'salon'}] },
-        cocina:{ text:'En la cocina, encuentras una taza con una palabra escrita en el fondo: "SOÑAR". También hay otra nota: "Piensa en tu lugar favorito".', choices:[{text:'Ir al balcón (tu lugar favorito)', to:'balcon'},{text:'Buscar en el armario', to:'armario'}] },
-        salon:{ text:'Junto al reloj hay una foto con una flecha apuntando a la estantería. Dentro hay un sobre.', choices:[{text:'Abrir el sobre', to:'sobre'},{text:'Ignorar y llamar a alguien', to:'llamada'}] },
-        balcon:{ text:'En el balcón, entre macetas, está el regalo final: una caja con tu nombre. ¡Felicidades! Has encontrado tu regalo.', choices:[{text:'Abrir regalo', to:'final'},{text:'Esperar y compartir con amigos', to:'final'}] },
-        armario:{ text:'El armario está vacío salvo una nota que dice "casi". Vuelve a intentarlo.', choices:[{text:'Volver al inicio', to:'start'},{text:'Ir al salón', to:'salon'}] },
-        sobre:{ text:'Dentro del sobre hay un mapa que indica el balcón. Parece que estás cerca.', choices:[{text:'Seguir el mapa', to:'balcon'},{text:'Ignorar y volver', to:'start'}] },
-        llamada:{ text:'Tu amiga te da un abrazo y te dice que hay una sorpresa en casa. Te anima a buscar en el balcón.', choices:[{text:'Ir al balcón', to:'balcon'},{text:'Seguir hablando', to:'start'}] },
-        final:{ text:'¡Sorpresa! Dentro de la caja hay tu regalo: una escapada, una carta o lo que quieras poner aquí. 🎉', choices:[] }
+        nota: {
+          text: 'La nota dice: “Donde el sol besa las pirámides, ahí te espera tu destino”. ¿Hacia dónde vas?',
+          choices:[
+            {text:'Buscar fotos del viaje', to:'fotos'},
+            {text:'Salir al balcón', to:'balcon'}
+          ]
+        },
+        salon: {
+          text: 'En el salón ves un mapa de Egipto en la mesa. Pareciera una pista…',
+          choices:[
+            {text:'Estudiar el mapa', to:'mapa'},
+            {text:'Regresar y leer nota', to:'nota'}
+          ]
+        },
+        fotos: {
+          text: 'Ves fotos hermosas del desierto, el Nilo, las pirámides… el viaje soñado. Pero aún no es el momento. Sigues buscando.',
+          choices:[
+            {text:'Regresar al salón', to:'salon'},
+            {text:'Volver al inicio', to:'start'}
+          ]
+        },
+        mapa: {
+          text: 'Según el mapa, debes ir al lugar más alto del balcón… ahí estará la sorpresa.',
+          choices:[
+            {text:'Ir al balcón', to:'balcon'},
+            {text:'Seguir buscando en casa', to:'salon'}
+          ]
+        },
+        balcon: {
+          text: 'En el balcón, entre flores y estrellas, aparece una imagen mágica...',
+          choices:[
+            {text:'Ver el regalo', to:'final'}
+          ]
+        },
+        final: {
+          text: '¡Sorpresa! Este viaje a Egipto es tu regalo: templos, desiertos, el Nilo y aventuras contigo. 🎉',
+          choices:[]
+        }
       },
-      finalMessage: '¡Feliz cumpleaños, {name}! Esperamos que te haya gustado la pequeña aventura.',
-      giftImage: ''
+      finalMessage: 'Mi esposita, este viaje es para ti. ¡Feliz cumpleaños! 🌍',
+      giftImage: 'https://images.unsplash.com/photo-1613932534449-3d1cc403a53a'
     }
 
     function t(s){ return s.replace(/{name}/g, CONFIG.birthdayName) }
-    const sceneEl = document.getElementById('scene')
     document.getElementById('title').innerText = t(CONFIG.startTitle)
     document.getElementById('subtitle').innerText = t(CONFIG.startSubtitle)
+    const sceneEl = document.getElementById('scene')
 
     function render(id){
       const scene = CONFIG.scenes[id]
@@ -75,28 +115,48 @@
       p.className = 'small'
       p.innerText = scene.text
       sceneEl.appendChild(p)
+
+      if(id==='start' && CONFIG.coverImage){
+        const img = document.createElement('img')
+        img.className = 'cover'
+        img.src = CONFIG.coverImage
+        sceneEl.appendChild(img)
+      }
+
       const choices = document.createElement('div')
-      choices.className='choices'
-      scene.choices.forEach(c=>{
+      choices.className = 'choices'
+      scene.choices.forEach(c => {
         const b = document.createElement('button')
-        b.className='opt'
+        b.className = 'opt'
         b.innerText = c.text
-        b.addEventListener('click',()=>render(c.to))
+        b.addEventListener('click', () => render(c.to))
         choices.appendChild(b)
       })
       sceneEl.appendChild(choices)
-      if(scene.choices.length===0){
+
+      if(scene.choices.length === 0){
         const gift = document.createElement('div')
-        gift.className='gift'
-        gift.innerHTML = `<strong>${t(CONFIG.finalMessage)}</strong><p class="small">${scene.text}</p>`
+        gift.className = 'gift'
+        const msg = document.createElement('div')
+        msg.innerHTML = `<strong>${t(CONFIG.finalMessage)}</strong><p class="small">${scene.text}</p>`
+        gift.appendChild(msg)
+        if(CONFIG.giftImage){
+          const img = document.createElement('img')
+          img.className = 'gift-img'
+          img.src = CONFIG.giftImage
+          gift.appendChild(img)
+          // activar desenfoque progresivo
+          setTimeout(() => img.classList.add('reveal'), 100)
+        }
         sceneEl.appendChild(gift)
         launchConfetti()
       }
-      if(id!=='start'){
+
+      if(id !== 'start'){
         const back = document.createElement('button')
-        back.className='back'
-        back.innerText='← Volver'
-        back.addEventListener('click',()=>render('start'))
+        back.className = 'back'
+        back.innerText = '← Volver'
+        back.addEventListener('click', () => render('start'))
         sceneEl.appendChild(back)
       }
     }
@@ -104,26 +164,36 @@
     function launchConfetti(){
       const canvas = document.getElementById('confettiCanvas')
       const ctx = canvas.getContext('2d')
-      canvas.width=window.innerWidth;canvas.height=window.innerHeight
-      const pieces=[];const colors=['#f59e0b','#f97316','#fb923c','#fde68a','#fff']
-      for(let i=0;i<130;i++) pieces.push({x:Math.random()*canvas.width,y:Math.random()*-canvas.height,vy:2+Math.random()*4,angle:Math.random()*360,r:2+Math.random()*6,c:colors[Math.floor(Math.random()*colors.length)]})
-      let t=0
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+      const pieces = []
+      const colors = ['#f59e0b','#f97316','#fb923c','#fde68a','#fff']
+      for(let i=0;i<130;i++){
+        pieces.push({ x: Math.random()*canvas.width, y: Math.random()*-canvas.height, vy:2+Math.random()*4, angle:Math.random()*360, r:2+Math.random()*6, c: colors[Math.floor(Math.random()*colors.length)] })
+      }
+      let tcount = 0
       function frame(){
-        t++
+        tcount++
         ctx.clearRect(0,0,canvas.width,canvas.height)
-        pieces.forEach(p=>{
-          p.x += Math.sin((p.y+t)/20)*1.5
+        pieces.forEach(p => {
+          p.x += Math.sin((p.y + tcount)/20)*1.5
           p.y += p.vy
-          ctx.fillStyle=p.c
-          ctx.save();ctx.translate(p.x,p.y);ctx.rotate((p.angle+t/3)*Math.PI/180)
-          ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*1.6)
+          ctx.fillStyle = p.c
+          ctx.save()
+          ctx.translate(p.x, p.y)
+          ctx.rotate((p.angle + tcount/3) * Math.PI/180)
+          ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r*1.6)
           ctx.restore()
-          if(p.y>canvas.height+20){p.y=-20;p.x=Math.random()*canvas.width}
+          if(p.y > canvas.height + 20){
+            p.y = -20
+            p.x = Math.random() * canvas.width
+          }
         })
-        if(t<800) requestAnimationFrame(frame)
+        if(tcount < 800) requestAnimationFrame(frame)
       }
       frame()
     }
+
     render('start')
   </script>
 </body>
