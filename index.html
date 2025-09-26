@@ -1,140 +1,169 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Sorpresa - Mi Esposita</title>
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      color: white;
-      text-align: center;
-      background-color: black;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-
-    h1 {
-      font-size: 2.5em;
-      margin-bottom: 20px;
-    }
-
-    .options {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    button {
-      padding: 10px 20px;
-      font-size: 1.2em;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      background-color: #ff4081;
-      color: white;
-      transition: background 0.3s;
-    }
-
-    button:hover {
-      background-color: #e91e63;
-    }
-
-    /* Fondo de regalo (imagen de Egipto) */
-    .gift-background {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-      filter: blur(20px);
-      opacity: 0;
-      transition: filter 5s ease-out, opacity 1s ease-in;
-      z-index: -1;
-    }
-    .gift-background.reveal {
-      filter: blur(0);
-      opacity: 1;
-    }
+    :root{--card-bg: rgba(0,0,0,0.66);--muted:#cbd5e1;--accent:#f59e0b}
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;background:#071126;color:#e6eef8}
+    .stage{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;position:relative;overflow:hidden}
+    #gift-bg{position:fixed;inset:0;background-size:cover;background-position:center;filter:blur(25px);transition:filter 5s ease-out,opacity 1s ease-in;opacity:0;z-index:1;background-color:#111}
+    #gift-bg.reveal{filter:blur(0);opacity:1}
+    .card{width:100%;max-width:780px;padding:22px;border-radius:14px;background:linear-gradient(180deg, rgba(0,0,0,0.60), rgba(0,0,0,0.70));box-shadow:0 10px 40px rgba(2,6,23,0.7);position:relative;z-index:2}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    header h1{font-size:20px;margin:0}
+    .lives{font-size:18px}
+    .story{margin-top:18px;font-size:16px;line-height:1.45;color:#e6eef8}
+    .options{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+    .opt{background:transparent;border:2px solid rgba(255,255,255,0.06);padding:12px 14px;border-radius:10px;text-align:left;color:#e6eef8;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;transition:transform .12s}
+    .opt:hover{transform:translateY(-3px);border-color:var(--accent)}
+    .modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);min-width:260px;max-width:90%;background:rgba(2,6,23,0.95);border-radius:12px;padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.8);z-index:999;display:none}
+    .modal.show{display:block}
+    .btn{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+    .btn.primary{background:var(--accent);color:#081126}
+    canvas.confetti{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:999}
+    .final-title{font-size:24px;margin:8px 0}
   </style>
 </head>
 <body>
-  <div id="app">
-    <h1 id="title">¡Feliz cumpleaños, Mi Esposita! 🎉</h1>
-    <div id="story"></div>
-    <div class="options" id="options"></div>
+  <div id="gift-bg" aria-hidden="true"></div>
+
+  <main class="stage" role="main">
+    <section class="card" aria-live="polite">
+      <header>
+        <div>
+          <h1>¡Feliz cumpleaños, <span id="name">Mi Esposita</span>! 🎉</h1>
+          <p class="small">Elige sabiamente — algunas elecciones son trampas encantadoras.</p>
+        </div>
+        <div class="lives">Vidas: <span id="hearts">❤️❤️</span></div>
+      </header>
+
+      <article class="story" id="story">Cargando aventura…</article>
+      <div class="options" id="options" role="list"></div>
+      <div class="footer" style="margin-top:18px;color:#cbd5e1;font-size:13px">No hay pistas. Sólo coraje y caprichos. 😉</div>
+    </section>
+  </main>
+
+  <div id="modal" class="modal" role="dialog" aria-modal="true">
+    <h3 id="modal-title">Oh no...</h3>
+    <p id="modal-msg">Mensaje</p>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button id="modal-retry" class="btn primary">Reintentar</button>
+    </div>
   </div>
 
-  <!-- Fondo de la imagen -->
-  <div id="gift-bg" class="gift-background"></div>
+  <canvas id="cconf" class="confetti" aria-hidden="true"></canvas>
 
   <script>
-    const CONFIG = {
-      start: "intro",
-      intro: {
-        text: "Bienvenida a tu aventura de cumpleaños 💖. ¿Lista para empezar?",
-        options: [
-          { text: "¡Sí, vamos!", next: "path1" }
-        ]
+    // ---------- RUTAS LOCALES (asegúrate de subir estos archivos EXACTAMENTE con estos nombres) ----------
+    const AUDIO = {
+      mystery: new Audio('./audio/mystery.mp3'),
+      fail: new Audio('./audio/fail.mp3'),
+      success: new Audio('./audio/success.mp3')
+    };
+    AUDIO.mystery.loop = true;
+    const GIFT_IMAGE_URL = './img/egypt.jpg';
+
+    // ---------- Nodos del juego (definidos) ----------
+    const NODES = {
+      start: {
+        text: `Mi Esposita 💖, hoy empieza tu aventura de cumpleaños. Cada decisión te acerca (o te aleja) de tu verdadero regalo. ¿Lista?`,
+        options: [{emoji:'🎶',text:'Un concierto íntimo',next:'node1',correct:true},{emoji:'🍫',text:'Una caja gigante de bombones',next:'fail_chocolate',correct:false}]
       },
-      path1: {
-        text: "Caminas por un sendero lleno de sorpresas... ¿Qué camino eliges?",
-        options: [
-          { text: "El misterioso 🌌", next: "path2" },
-          { text: "El brillante 🌟", next: "path3" }
-        ]
-      },
-      path2: {
-        text: "Te encuentras con una pista escondida. ¿Quieres seguirla?",
-        options: [
-          { text: "Sí, me intriga 👀", next: "gift" },
-          { text: "No, prefiero volver ↩️", next: "path1" }
-        ]
-      },
-      path3: {
-        text: "El camino brillante te lleva directo a la sorpresa final.",
-        options: [
-          { text: "¡Descubrir el regalo! 🎁", next: "gift" }
-        ]
-      },
-      gift: {
-        text: "Tu regalo es un viaje a un lugar mágico... ❤️",
-        options: []
-      }
+      fail_chocolate:{text:`Los bombones eran tan deliciosos que te quedaste dormida con una sonrisa. 😴🍫`,fail:true},
+      node1:{text:`Llegas a un escenario mágico: a tu izquierda hay mimo y calma, a la derecha algo que te eleva. ¿Cuál eliges?`,options:[{emoji:'💆',text:'Masaje de lujo',next:'fail_masaje',correct:false},{emoji:'🎈',text:'Paseo en globo',next:'node2',correct:true}]},
+      fail_masaje:{text:`El masaje fue tan perfecto que te convertiste en estatua de gelatina. 💆‍♀️🤣 ¡Inmóvil de felicidad!`,fail:true},
+      node2:{text:`El globo te deja en un bazar misterioso. Dos cajas: una perfuma el aire, la otra susurra secretos. ¿Cuál abres?`,options:[{emoji:'🧴',text:'Perfume árabe',next:'fail_perfume',correct:false},{emoji:'✉️',text:'Un sobre misterioso',next:'node3',correct:true}]},
+      fail_perfume:{text:`El perfume era tan potente que hasta los camellos se pusieron las patas en la oreja. 🐪💨`,fail:true},
+      node3:{text:`Dentro del sobre hay dos experiencias extremas. Escoge con valentía.`,options:[{emoji:'🪂',text:'Saltarte en paracaídas',next:'fail_paracaidas',correct:false},{emoji:'🦁',text:'Safari en jeep',next:'node4',correct:true}]},
+      fail_paracaidas:{text:`Saltaste en paracaídas, pero el instructor te dio un paraguas. ☂️😱`,fail:true},
+      node4:{text:`El safari llega a un cruce: objetos tentadores aparecen. ¿Qué eliges?`,options:[{emoji:'🎤',text:'Micrófono para crear contenido',next:'fail_micro',correct:false},{emoji:'✈️',text:'Tomar un avión privado',next:'success',correct:true}]},
+      fail_micro:{text:`Usaste el micrófono y ahora un gallo es tu compañero de dúo. 🐓🎤 Fuiste viral, pero no encontraste el regalo.`,fail:true},
+      success:{text:`¡Lo lograste! El avión privado despega y el destino aparece en la pantalla: 🌅 **EGIPTO** 🌅\n\nMi Esposita, tu regalo es un viaje a las pirámides. ✨🎁`,success:true}
     };
 
-    function showNode(nodeKey) {
-      const node = CONFIG[nodeKey];
-      const storyDiv = document.getElementById("story");
-      const optionsDiv = document.getElementById("options");
+    // ---------- Estado ----------
+    let state = {current:'start',lives:2,startedSound:false};
+    const storyEl = document.getElementById('story'), optionsEl = document.getElementById('options'), heartsEl = document.getElementById('hearts');
+    const giftBg = document.getElementById('gift-bg'), modal = document.getElementById('modal'), modalTitle = document.getElementById('modal-title'), modalMsg = document.getElementById('modal-msg'), modalRetry = document.getElementById('modal-retry');
+    const confCanvas = document.getElementById('cconf');
 
-      storyDiv.textContent = node.text;
-      optionsDiv.innerHTML = "";
-
-      node.options.forEach(opt => {
-        const btn = document.createElement("button");
-        btn.textContent = opt.text;
-        btn.onclick = () => showNode(opt.next);
-        optionsDiv.appendChild(btn);
-      });
-
-      // Cuando llegamos al regalo, mostramos la imagen de fondo
-      if (nodeKey === "gift") {
-        const bg = document.getElementById("gift-bg");
-        bg.style.backgroundImage = "url('https://images.unsplash.com/photo-1613932534449-3d1cc403a53a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')";
-        setTimeout(() => bg.classList.add("reveal"), 100);
+    // Render node
+    function renderNode(key){
+      state.current = key;
+      const node = NODES[key];
+      storyEl.textContent = node.text;
+      optionsEl.innerHTML = '';
+      if(node.options && node.options.length){
+        node.options.forEach(opt => {
+          const b=document.createElement('button'); b.className='opt'; b.innerHTML=`<span class="emoji">${opt.emoji}</span><span>${opt.text}</span>`;
+          b.addEventListener('click', ()=> onChoose(opt)); optionsEl.appendChild(b);
+        });
+      } else {
+        if(node.fail) handleFail(node.text); else if(node.success) handleSuccess(node.text);
       }
     }
 
-    // Iniciar historia
-    showNode(CONFIG.start);
+    function onChoose(opt){
+      // start mystery music on first interaction
+      if(!state.startedSound){
+        try{ AUDIO.mystery.play().catch(()=>{}); }catch(e){}
+        state.startedSound = true;
+      }
+      renderNode(opt.next);
+    }
+
+    function handleFail(text){
+      try{ AUDIO.fail.currentTime = 0; AUDIO.fail.play().catch(()=>{});}catch(e){}
+      state.lives = Math.max(0, state.lives - 1); updateLives();
+      const msg = text + (state.lives>0 ? `\n\nTe quedan ${state.lives} vida(s).` : `\n\nYa no te quedan vidas.`);
+      showModal('¡Vaya! 😅', msg, () => {
+        closeModal();
+        if(state.lives>0) resetToStart(); else resetGameFull();
+      });
+    }
+
+    function handleSuccess(text){
+      try{ AUDIO.mystery.pause(); } catch(e){}
+      try{ AUDIO.success.currentTime = 0; AUDIO.success.play().catch(()=>{});}catch(e){}
+      storyEl.innerHTML = `<div class="final-title">¡Destino desbloqueado!</div><div style="white-space:pre-line">${text}</div>`;
+      optionsEl.innerHTML = '';
+      giftBg.style.backgroundImage = `url('${GIFT_IMAGE_URL}')`;
+      setTimeout(()=> { giftBg.classList.add('reveal'); startConfetti(); }, 120);
+      const btn = document.createElement('button'); btn.className='opt'; btn.innerHTML=`<span class="emoji">🔁</span><span>Jugar de nuevo</span>`;
+      btn.addEventListener('click', ()=> { stopConfetti(); resetGameFull(); });
+      optionsEl.appendChild(btn);
+    }
+
+    function updateLives(){ heartsEl.textContent = '❤️'.repeat(state.lives) + (state.lives<2 ? '🤍'.repeat(2-state.lives) : ''); }
+
+    function resetToStart(){ renderNode('start'); }
+    function resetGameFull(){
+      state.lives = 2; updateLives(); giftBg.classList.remove('reveal'); stopConfetti();
+      try{ AUDIO.success.pause(); AUDIO.success.currentTime = 0;}catch(e){}
+      state.startedSound = false; renderNode('start');
+    }
+
+    function showModal(title,msg,onRetry){ modalTitle.textContent=title; modalMsg.textContent=msg; modal.classList.add('show'); modalRetry.onclick = ()=> onRetry(); }
+    function closeModal(){ modal.classList.remove('show'); }
+    modalRetry.addEventListener('click', closeModal);
+
+    // Confetti
+    let confettiRAF = null; const confettiPieces=[];
+    function startConfetti(){ const canvas=confCanvas, ctx=canvas.getContext('2d'); function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight} resize(); window.addEventListener('resize',resize);
+      confettiPieces.length=0; const colors=['#f59e0b','#f97316','#fb923c','#fde68a','#fff']; for(let i=0;i<140;i++) confettiPieces.push({x:Math.random()*canvas.width,y:Math.random()*-canvas.height,vy:2+Math.random()*4,angle:Math.random()*360,r:2+Math.random()*7,c:colors[Math.floor(Math.random()*colors.length)]});
+      let t=0; function frame(){ t++; ctx.clearRect(0,0,canvas.width,canvas.height); confettiPieces.forEach(p=>{ p.x+=Math.sin((p.y+t)/20)*1.5; p.y+=p.vy; ctx.fillStyle=p.c; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate((p.angle+t/3)*Math.PI/180); ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*1.6); ctx.restore(); if(p.y>canvas.height+20){p.y=-20;p.x=Math.random()*canvas.width} }); confettiRAF = requestAnimationFrame(frame); } confettiRAF = requestAnimationFrame(frame);
+    }
+    function stopConfetti(){ if(confettiRAF) cancelAnimationFrame(confettiRAF); const ctx=confCanvas.getContext('2d'); ctx.clearRect(0,0,confCanvas.width,confCanvas.height); }
+
+    // Init
+    document.getElementById('name').textContent = 'Mi Esposita';
+    updateLives(); renderNode('start');
+
+    // Keyboard shortcuts 1/2
+    document.addEventListener('keydown',(e)=>{ const opts = Array.from(optionsEl.querySelectorAll('.opt')); if(opts.length && (e.key==='1' || e.key==='2')){ const idx = e.key==='1' ? 0 : 1; const btn = opts[idx]; if(btn) btn.click(); }});
   </script>
 </body>
 </html>
