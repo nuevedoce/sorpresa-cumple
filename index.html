@@ -36,7 +36,7 @@
     <section class="card" aria-live="polite">
       <header>
         <div>
-          <h1>MISIÓN: CUMPLEAÑOS SOFÍA</h1>
+          <h1 id="main-title">MISIÓN: CUMPLEAÑOS SOFÍA</h1>
           <p class="small" style="color: var(--muted);">Agente, su objetivo le espera. Actúe con sigilo.</p>
         </div>
         <div class="lives">Intentos: <span id="hearts">❤️❤️❤️</span></div>
@@ -62,11 +62,9 @@
   <script>
     // ---------- CONFIGURACIÓN PRINCIPAL ----------
     const AGENT_NAME = 'Sofía';
-    // Ruta local a la imagen final del regalo
-    const GIFT_IMAGE_URL = './img/egipto-atardecer.jpg';
+    const GIFT_IMAGE_URL = './img/egipto-atardecer.jpg'; // Ruta local a la imagen final del regalo
 
     // ---------- RECURSOS LOCALES (Sonidos) ----------
-    // Apuntan a los archivos en la carpeta 'audio'
     const AUDIO = {
       mystery: new Audio('./audio/mystery.mp3'),
       fail: new Audio('./audio/fail.mp3'),
@@ -77,8 +75,8 @@
     // ---------- NODOS DE LA AVENTURA PERSONALIZADA ----------
     const NODES = {
       start: {
-        text: `Feliz cumpleaños, mi agente favorita. Hoy, tu misión es descifrar una serie de pistas para encontrar tu verdadera sorpresa. Pero cuidado, el camino está lleno de tentaciones encantadoras. ¿Lista para empezar, Sofía?`,
-        image: './img/agente-portada.gif', // Ruta local
+        text: `Feliz cumpleaños, mi agente favorita. Hoy, tu misión es descifrar una serie de pistas para encontrar tu verdadera sorpresa. Pero cuidado, el camino está lleno de tentaciones encantadoras. ¿Lista para empezar, ${AGENT_NAME}?`,
+        image: './img/agente-portada.gif',
         options: [
           {emoji:'😎',text:'Misión aceptada',next:'node1'},
           {emoji:'🤨',text:'¿De qué va todo esto?',next:'node1'}
@@ -86,7 +84,7 @@
       },
       node1: {
         text: `Excelente. Tu primera pista te lleva a una encrucijada de bienestar. Debes elegir una experiencia para "despejar la mente" antes del verdadero desafío. ¿Qué decides?`,
-        image: './img/spa.jpg', // Ruta local
+        image: './img/spa.jpg',
         options: [
           {emoji:'💆',text:'Masajes relajantes',next:'fail_masaje'},
           {emoji:'✈️',text:'Una experiencia de altos vuelos',next:'node2'}
@@ -94,12 +92,12 @@
       },
       fail_masaje: {
         text:`Los masajes fueron tan increíblemente relajantes que te quedaste dormida. Soñaste con la misión, pero al despertar, las pistas se habían enfriado. ¡Misión comprometida!`,
-        image: './img/siesta.gif', // Ruta local
+        image: './img/siesta.gif',
         fail: true
       },
       node2: {
         text: `¡Adrenalina pura! Te entregan un maletín con gadgets de última generación. "Elige tu herramienta, agente". El contenido del maletín determinará tu próximo movimiento.`,
-        image: './img/gadgets.jpg', // Ruta local
+        image: './img/gadgets.jpg',
         options: [
           {emoji:'🎤',text:'Micrófono de solapa y estabilizador',next:'fail_contenido'},
           {emoji:'🗺️',text:'Un proyector de mapas holográfico',next:'node3'}
@@ -107,12 +105,12 @@
       },
       fail_contenido: {
         text:`El equipo era tan bueno que empezaste a crear contenido ahí mismo. Tu video "Unboxing de gadgets secretos" se hizo viral, pero reveló tu posición al enemigo. ¡Misión comprometida!`,
-        image: './img/youtuber-fail.gif', // Ruta local
+        image: './img/youtuber-fail.gif',
         fail: true
       },
       node3: {
         text: `El proyector muestra un bazar misterioso. "Busca el aroma del desierto o la emoción del cielo", susurra una voz. Dos objetos brillan en un puesto: un frasco exótico y un ticket dorado.`,
-        image: './img/bazar.jpg', // Ruta local
+        image: './img/bazar.jpg',
         options: [
           {emoji:'🧴',text:'El perfume árabe',next:'fail_perfume'},
           {emoji:'🪂',text:'El ticket para saltar en paracaídas',next:'fail_paracaidas'}
@@ -120,23 +118,23 @@
       },
       fail_perfume: {
         text:`El perfume era tan magnético que un encantador de serpientes te confundió con su musa y no te dejó marchar hasta que le enseñaste tus trucos. Perdiste un tiempo valioso. ¡Misión comprometida!`,
-        image: './img/serpiente.gif', // Ruta local
+        image: './img/serpiente.gif',
         fail: true
       },
       fail_paracaidas: {
         text:`El salto fue increíble, pero aterrizaste en medio de un festival de música beduina. Te coronaron reina del baile y la fiesta duró horas. Divertido, pero... ¡Misión comprometida!`,
-        image: './img/paracaidas-fallo.gif', // Ruta local
+        image: './img/paracaidas-fallo.gif',
         fail: true
       },
       node_secret_choice: {
         text: `Un momento... mientras te distraías con los objetos, una nota cayó de tu bolsillo. Es un trozo de mapa antiguo. El proyector reacciona y revela un nuevo camino. Un único destino. El destino que siempre has visualizado.`,
-        image: './img/mapa-secreto.gif', // Ruta local
+        image: './img/mapa-secreto.gif',
         options: [
             {emoji:'✨',text:'Seguir el mapa del destino', next:'success'}
         ]
       },
       success:{
-        text:`¡MISIÓN CUMPLIDA, SOFÍA! \n\nEl verdadero tesoro no era un objeto, sino un sueño. Es hora de sacar esa imagen de tu wishboard y hacerla realidad. Mi amor, ¡nos vamos a Egipto!`,
+        text:`¡MISIÓN CUMPLIDA, ${AGENT_NAME.toUpperCase()}! \n\nEl verdadero tesoro no era un objeto, sino un sueño. Es hora de sacar esa imagen de tu wishboard y hacerla realidad. Mi amor, ¡nos vamos a Egipto!`,
         success:true
       }
     };
@@ -145,15 +143,13 @@
     let state = {current:'start',lives:3,startedSound:false};
     const storyEl = document.getElementById('story'), optionsEl = document.getElementById('options'), heartsEl = document.getElementById('hearts'), imageContainerEl = document.getElementById('image-container');
     const giftBg = document.getElementById('gift-bg'), modal = document.getElementById('modal'), modalTitle = document.getElementById('modal-title'), modalMsg = document.getElementById('modal-msg'), modalRetry = document.getElementById('modal-retry');
-    const confCanvas = document.getElementById('cconf');
-
+    
     function renderNode(key){
       state.current = key;
       const node = NODES[key];
-      const processedText = node.text.replace(/Sofía/g, AGENT_NAME);
       
       imageContainerEl.innerHTML = node.image ? `<img src="${node.image}" alt="Escena de la aventura">` : '';
-      storyEl.textContent = processedText;
+      storyEl.textContent = node.text;
       optionsEl.innerHTML = '';
       if(node.options && node.options.length){
         node.options.forEach(opt => {
@@ -170,9 +166,7 @@
         try{ AUDIO.mystery.play().catch(()=>{}); }catch(e){}
         state.startedSound = true;
       }
-      
       const targetNode = NODES[opt.next];
-
       if(state.current === 'node3' && (opt.next === 'fail_perfume' || opt.next === 'fail_paracaidas')) {
           handleFail(targetNode, true);
       } else if (targetNode) {
@@ -183,9 +177,7 @@
     function handleFail(node, isSoftFail = false){
       try{ AUDIO.fail.currentTime = 0; AUDIO.fail.play().catch(()=>{});}catch(e){}
       state.lives = Math.max(0, state.lives - 1); updateLives();
-      
       const msg = node.text + (state.lives>0 ? `\n\nTe quedan ${state.lives} intento(s).` : `\n\nNo te quedan más intentos.`);
-      
       const onRetry = () => {
         closeModal();
         if (isSoftFail && state.lives > 0) {
@@ -202,8 +194,7 @@
     function handleSuccess(node){
       try{ AUDIO.mystery.pause(); } catch(e){}
       try{ AUDIO.success.currentTime = 0; AUDIO.success.play().catch(()=>{});}catch(e){}
-      const processedText = node.text.replace(/SOFÍA/g, AGENT_NAME.toUpperCase());
-      storyEl.innerHTML = `<div class="final-title">¡PAQUETE RECUPERADO!</div><div style="white-space:pre-line">${processedText}</div>`;
+      storyEl.innerHTML = `<div class="final-title">¡PAQUETE RECUPERADO!</div><div style="white-space:pre-line">${node.text}</div>`;
       optionsEl.innerHTML = '';
       giftBg.style.backgroundImage = `url('${GIFT_IMAGE_URL}')`;
       setTimeout(()=> { giftBg.classList.add('reveal'); startConfetti(); }, 120);
@@ -222,18 +213,9 @@
 
     function showModal(title,msg,onRetry){ modalTitle.textContent=title; modalMsg.textContent=msg; modal.classList.add('show'); modalRetry.onclick = ()=> onRetry(); }
     function closeModal(){ modal.classList.remove('show'); }
-    modalRetry.addEventListener('click', closeModal);
-
-    // Confetti
-    let confettiRAF = null; const confettiPieces=[];
-    function startConfetti(){ const canvas=confCanvas, ctx=canvas.getContext('2d'); function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight} resize(); window.addEventListener('resize',resize);
-      confettiPieces.length=0; const colors=['#f59e0b','#f97316','#e11d48','#fde68a','#fff']; for(let i=0;i<140;i++) confettiPieces.push({x:Math.random()*canvas.width,y:Math.random()*-canvas.height,vy:2+Math.random()*4,angle:Math.random()*360,r:2+Math.random()*7,c:colors[Math.floor(Math.random()*colors.length)]});
-      let t=0; function frame(){ t++; ctx.clearRect(0,0,canvas.width,canvas.height); confettiPieces.forEach(p=>{ p.x+=Math.sin((p.y+t)/20)*1.5; p.y+=p.vy; ctx.fillStyle=p.c; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate((p.angle+t/3)*Math.PI/180); ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*1.6); ctx.restore(); if(p.y>canvas.height+20){p.y=-20;p.x=Math.random()*canvas.width} }); confettiRAF = requestAnimationFrame(frame); } confettiRAF = requestAnimationFrame(frame);
-    }
-    function stopConfetti(){ if(confettiRAF) cancelAnimationFrame(confettiRAF); const ctx=confCanvas.getContext('2d'); ctx.clearRect(0,0,confCanvas.width,confCanvas.height); }
 
     // Init
-    document.querySelector('header h1').textContent = `MISIÓN: CUMPLEAÑOS ${AGENT_NAME.toUpperCase()}`;
+    document.getElementById('main-title').textContent = `MISIÓN: CUMPLEAÑOS ${AGENT_NAME.toUpperCase()}`;
     updateLives(); renderNode('start');
     document.addEventListener('keydown',(e)=>{ const opts = Array.from(optionsEl.querySelectorAll('.opt')); if(opts.length && (e.key==='1' || e.key==='2')){ const idx = e.key==='1' ? 0 : 1; const btn = opts[idx]; if(btn) btn.click(); }});
   </script>
