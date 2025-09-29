@@ -112,11 +112,11 @@
       },
       fail_contenido: { text:`El equipo era tan bueno que empezaste a crear contenido ahí mismo. Tu video "Unboxing de gadgets secretos" se hizo viral, pero reveló tu posición al enemigo. ¡Misión comprometida!`, image: './img/youtuber-fail.gif', fail: true },
       node3: {
-        text: `El proyector muestra un bazar misterioso. "Busca el aroma del desierto o la emoción del cielo", susurra una voz. Dos objetos brillan en un puesto: un frasco exótico y un ticket dorado.`,
+        text: `El proyector muestra el camino hacia un bazar misterioso. "Elige entre el aroma del desierto o la emoción del cielo", te susurra una voz al oído. Dos objetos brillan sobre el mostrador: un frasco exótico y un ticket dorado.`,
         image: './img/bazar.jpg',
         options: [
-          {emoji:'🧴',text:'El perfume árabe',next:'fail_perfume'},
-          {emoji:'🪂',text:'El ticket para saltar en paracaídas',next:'fail_paracaidas'}
+          {emoji:'🧴',text:'Un perfume árabe',next:'fail_perfume'},
+          {emoji:'🪂',text:'Un ticket para saltar en paracaídas',next:'fail_paracaidas'}
         ]
       },
       fail_perfume: { text:`El perfume era tan magnético que un encantador de serpientes te confundió con su musa y no te dejó marchar hasta que le enseñaste tus trucos. Perdiste un tiempo valioso. ¡Misión comprometida!`, image: './img/serpiente.gif', fail: true },
@@ -272,6 +272,7 @@ document.addEventListener('keydown',(e)=>{ const opts = Array.from(optionsEl.que
   </script>
 </body>
 </html>
+
 
 
 
