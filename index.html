@@ -177,7 +177,7 @@
     function handleFail(node, isSoftFail = false){
       try{ AUDIO.fail.currentTime = 0; AUDIO.fail.play().catch(()=>{});}catch(e){}
       state.lives = Math.max(0, state.lives - 1); updateLives();
-      const msg = node.text + (state.lives>0 ? `\n\nTe quedan ${state.lives} intento(s).` : `\n\nNo te quedan más intentos.`);
+      const msg = (state.lives > 0 ? `Te quedan ${state.lives} intento(s).` : `No te quedan más intentos.`);
       const onRetry = () => {
         closeModal();
         if (isSoftFail && state.lives > 0) {
@@ -221,5 +221,6 @@
   </script>
 </body>
 </html>
+
 
 
