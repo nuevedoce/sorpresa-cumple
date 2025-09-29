@@ -134,6 +134,7 @@
     const storyEl = document.getElementById('story'), optionsEl = document.getElementById('options'), heartsEl = document.getElementById('hearts'), imageContainerEl = document.getElementById('image-container');
     const giftBg = document.getElementById('gift-bg'), modal = document.getElementById('modal'), modalTitle = document.getElementById('modal-title'), modalMsg = document.getElementById('modal-msg'), modalRetry = document.getElementById('modal-retry');
     const confCanvas = document.getElementById('cconf');
+    let finalChoicesState = { perfume: false, paracaidas: false };
 
     function renderNode(key){
       state.current = key;
@@ -151,27 +152,56 @@
       }
     }
 
-    function onChoose(opt){
+  // REEMPLAZA TU FUNCIÓN onChoose ENTERA CON ESTA
+function onChoose(opt){
   if(!state.startedSound){
     try{ AUDIO.mystery.play().catch(()=>{}); }catch(e){}
     state.startedSound = true;
   }
   const targetNode = NODES[opt.next];
 
-  // AÑADIMOS ESTA LÓGICA
-  // Si el próximo paso NO es un fallo, es un acierto
+  // Lógica de acierto para el resto del juego
   if (!targetNode.fail) {
     try { AUDIO.correct.currentTime = 0; AUDIO.correct.play().catch(()=>{}); } catch(e){}
   }
 
- if(state.current === 'node3' && (opt.next === 'fail_perfume' || opt.next === 'fail_paracaidas')) {
-      renderNode(opt.next);      // <-- AÑADIDO: Muestra la escena del fallo.
-      handleFail(targetNode, true); // Muestra el modal encima.
+  // --- LÓGICA ESPECIAL PARA EL PUZLE FINAL ---
+  if(state.current === 'node3') {
+    // Marcamos la opción elegida como "vista"
+    if (opt.next === 'fail_perfume') finalChoicesState.perfume = true;
+    if (opt.next === 'fail_paracaidas') finalChoicesState.paracaidas = true;
+
+    // Mostramos la pantalla del "fallo" que acaba de elegir
+    renderNode(opt.next);
+
+    // Comprobamos si ya ha visto las DOS opciones
+    if (finalChoicesState.perfume && finalChoicesState.paracaidas) {
+      // Si ya ha visto las dos, mostramos el modal que lleva al camino secreto
+      setTimeout(() => { // Un pequeño retardo para que pueda leer el mensaje del fallo
+        showModal(
+          '¡Pistas Descubiertas!', 
+          'Has explorado ambas posibilidades... y al hacerlo, has revelado un camino oculto.', 
+          () => { closeModal(); renderNode('node_secret_choice'); }
+        );
+      }, 2500); // 2.5 segundos de retardo
+    } else {
+      // Si todavía falta una por ver, mostramos un modal que le devuelve al bazar
+      setTimeout(() => {
+        showModal(
+          'Pista Incorrecta...', 
+          'Interesante... pero parece que este no es el camino. Debes volver a intentarlo.', 
+          () => { closeModal(); renderNode('node3'); }
+        );
+      }, 2500);
+    }
+  } 
+  // --- FIN DE LA LÓGICA ESPECIAL ---
+  else if (targetNode.fail) {
+    handleFail(targetNode);
   } else if (targetNode) {
-      renderNode(opt.next);
+    renderNode(opt.next);
   }
 }
-
     function handleFail(node, isSoftFail = false){
       try{ AUDIO.fail.currentTime = 0; AUDIO.fail.play().catch(()=>{});}catch(e){}
       state.lives = Math.max(0, state.lives - 1); updateLives();
@@ -273,6 +303,7 @@ document.addEventListener('keydown',(e)=>{ const opts = Array.from(optionsEl.que
   </script>
 </body>
 </html>
+
 
 
 
