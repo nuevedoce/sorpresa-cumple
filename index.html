@@ -35,7 +35,7 @@
 <body>
   <div id="splash-screen" class="stage" style="position: fixed; inset: 0; background: #111827; z-index: 1000; transition: opacity 0.5s ease-out;">
   <div class="card" style="text-align: center;">
-    <h1 style="color: var(--accent); font-size: 24px;">MISIÓN: CUMPLEAÑOS SOFÍA</h1>
+    <h1 style="color: var(--accent); font-size: 24px;">MISIÓN: 03/10/2025</h1>
     <p style="font-size: 18px; margin-top: 10px;">Tu aventura está a punto de comenzar...</p>
     <button id="start-button" class="btn primary" style="margin-top: 20px; font-size: 18px; padding: 12px 24px; cursor: pointer;">Comenzar Misión</button>
   </div>
@@ -46,7 +46,7 @@
     <section class="card" aria-live="polite">
       <header>
         <div>
-          <h1 id="main-title">MISIÓN: CUMPLEAÑOS SOFÍA</h1>
+          <h1 id="main-title">MISIÓN: 03/10/2025</h1>
           <p class="small" style="color: var(--muted);">Agente, su objetivo le espera. Actúe con sigilo.</p>
         </div>
         <div class="lives">Intentos: <span id="hearts">❤️❤️❤️</span></div>
@@ -86,7 +86,7 @@
     // ---------- NODOS DE LA AVENTURA PERSONALIZADA ----------
     const NODES = {
       start: {
-        text: `Feliz cumpleaños, mi agente favorita. Hoy, tu misión es descifrar una serie de pistas para encontrar tu verdadera sorpresa. Pero cuidado, el camino está lleno de tentaciones encantadoras. ¿Lista para empezar, ${AGENT_NAME}?`,
+        text: `Feliz cumpleaños!, mi agente favorita. Hoy, tu misión es descifrar una serie de pistas para encontrar tu verdadera sorpresa. Pero cuidado, el camino está lleno de tentaciones encantadoras. ¿Lista para empezar, ${AGENT_NAME}?`,
         image: './img/agente-portada.gif',
         options: [
           {emoji:'😎',text:'Misión aceptada',next:'node1'},
@@ -272,6 +272,7 @@ document.addEventListener('keydown',(e)=>{ const opts = Array.from(optionsEl.que
   </script>
 </body>
 </html>
+
 
 
 
