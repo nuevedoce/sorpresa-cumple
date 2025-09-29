@@ -21,7 +21,7 @@
     .options{display:flex;flex-direction:column;gap:12px;margin-top:18px}
     .opt{background:transparent;border:2px solid rgba(255,255,255,0.1);padding:12px 14px;border-radius:10px;text-align:left;color:#e6eef8;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;transition: all .2s}
     .opt:hover{transform:translateY(-3px);border-color:var(--accent); background-color: rgba(225, 29, 72, 0.1);}
-    .modal{position:fixed;left:50%;top:10%;transform:translate(-50%,-50%);min-width:260px;max-width:90%;background:rgba(2,6,23,0.95);border-radius:12px;padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.8);z-index:999;display:none; border: 1px solid rgba(255,255,255,0.1);}
+    .modal{position:fixed;left:50%;top:30%;transform:translate(-50%, -50%);min-width:260px;max-width:90%;background:rgba(2,6,23,0.95);border-radius:12px;padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.8);z-index:999;display:none; border: 1px solid rgba(255,255,255,0.1);}
     .modal.show{display:block}
     .btn{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
     .btn.primary{background:var(--accent);color:#fff}
@@ -56,13 +56,13 @@
       <button id="modal-retry" class="btn primary">Reintentar Misión</button>
     </div>
   </div>
-
+  
   <canvas id="cconf" class="confetti" aria-hidden="true"></canvas>
 
   <script>
     // ---------- CONFIGURACIÓN PRINCIPAL ----------
     const AGENT_NAME = 'Sofía';
-    const GIFT_IMAGE_URL = './img/egipto-atardecer.jpg'; // Ruta local a la imagen final del regalo
+    const GIFT_IMAGE_URL = './img/egipto-atardecer.jpg';
 
     // ---------- RECURSOS LOCALES (Sonidos) ----------
     const AUDIO = {
@@ -90,11 +90,7 @@
           {emoji:'✈️',text:'Una experiencia de altos vuelos',next:'node2'}
         ]
       },
-      fail_masaje: {
-        text:`Los masajes fueron tan increíblemente relajantes que te quedaste dormida. Soñaste con la misión, pero al despertar, las pistas se habían enfriado. ¡Misión comprometida!`,
-        image: './img/siesta.gif',
-        fail: true
-      },
+      fail_masaje: { text:`Los masajes fueron tan increíblemente relajantes que te quedaste dormida. Soñaste con la misión, pero al despertar, las pistas se habían enfriado. ¡Misión comprometida!`, image: './img/siesta.gif', fail: true },
       node2: {
         text: `¡Adrenalina pura! Te entregan un maletín con gadgets de última generación. "Elige tu herramienta, agente". El contenido del maletín determinará tu próximo movimiento.`,
         image: './img/gadgets.jpg',
@@ -103,11 +99,7 @@
           {emoji:'🗺️',text:'Un proyector de mapas holográfico',next:'node3'}
         ]
       },
-      fail_contenido: {
-        text:`El equipo era tan bueno que empezaste a crear contenido ahí mismo. Tu video "Unboxing de gadgets secretos" se hizo viral, pero reveló tu posición al enemigo. ¡Misión comprometida!`,
-        image: './img/youtuber-fail.gif',
-        fail: true
-      },
+      fail_contenido: { text:`El equipo era tan bueno que empezaste a crear contenido ahí mismo. Tu video "Unboxing de gadgets secretos" se hizo viral, pero reveló tu posición al enemigo. ¡Misión comprometida!`, image: './img/youtuber-fail.gif', fail: true },
       node3: {
         text: `El proyector muestra un bazar misterioso. "Busca el aroma del desierto o la emoción del cielo", susurra una voz. Dos objetos brillan en un puesto: un frasco exótico y un ticket dorado.`,
         image: './img/bazar.jpg',
@@ -116,38 +108,25 @@
           {emoji:'🪂',text:'El ticket para saltar en paracaídas',next:'fail_paracaidas'}
         ]
       },
-      fail_perfume: {
-        text:`El perfume era tan magnético que un encantador de serpientes te confundió con su musa y no te dejó marchar hasta que le enseñaste tus trucos. Perdiste un tiempo valioso. ¡Misión comprometida!`,
-        image: './img/serpiente.gif',
-        fail: true
-      },
-      fail_paracaidas: {
-        text:`El salto fue increíble, pero aterrizaste en medio de un festival de música beduina. Te coronaron reina del baile y la fiesta duró horas. Divertido, pero... ¡Misión comprometida!`,
-        image: './img/paracaidas-fallo.gif',
-        fail: true
-      },
+      fail_perfume: { text:`El perfume era tan magnético que un encantador de serpientes te confundió con su musa y no te dejó marchar hasta que le enseñaste tus trucos. Perdiste un tiempo valioso. ¡Misión comprometida!`, image: './img/serpiente.gif', fail: true },
+      fail_paracaidas: { text:`El salto fue increíble, pero aterrizaste en medio de un festival de música beduina. Te coronaron reina del baile y la fiesta duró horas. Divertido, pero... ¡Misión comprometida!`, image: './img/paracaidas-fallo.gif', fail: true },
       node_secret_choice: {
         text: `Un momento... mientras te distraías con los objetos, una nota cayó de tu bolsillo. Es un trozo de mapa antiguo. El proyector reacciona y revela un nuevo camino. Un único destino. El destino que siempre has visualizado.`,
         image: './img/mapa-secreto.gif',
-        options: [
-            {emoji:'✨',text:'Seguir el mapa del destino', next:'success'}
-        ]
+        options: [ {emoji:'✨',text:'Seguir el mapa del destino', next:'success'} ]
       },
-      success:{
-        text:`¡MISIÓN CUMPLIDA, ${AGENT_NAME.toUpperCase()}! \n\nEl verdadero tesoro no era un objeto, sino un sueño. Es hora de sacar esa imagen de tu wishboard y hacerla realidad. Mi amor, ¡nos vamos a Egipto!`,
-        success:true
-      }
+      success:{ text:`¡MISIÓN CUMPLIDA, ${AGENT_NAME.toUpperCase()}! \n\nEl verdadero tesoro no era un objeto, sino un sueño. Es hora de sacar esa imagen de tu wishboard y hacerla realidad. Mi amor, ¡nos vamos a Egipto!`, success:true }
     };
 
-    // ---------- LÓGICA DEL JUEGO (no necesita tocar esto) ----------
+    // ---------- LÓGICA DEL JUEGO ----------
     let state = {current:'start',lives:3,startedSound:false};
     const storyEl = document.getElementById('story'), optionsEl = document.getElementById('options'), heartsEl = document.getElementById('hearts'), imageContainerEl = document.getElementById('image-container');
     const giftBg = document.getElementById('gift-bg'), modal = document.getElementById('modal'), modalTitle = document.getElementById('modal-title'), modalMsg = document.getElementById('modal-msg'), modalRetry = document.getElementById('modal-retry');
-    
+    const confCanvas = document.getElementById('cconf');
+
     function renderNode(key){
       state.current = key;
       const node = NODES[key];
-      
       imageContainerEl.innerHTML = node.image ? `<img src="${node.image}" alt="Escena de la aventura">` : '';
       storyEl.textContent = node.text;
       optionsEl.innerHTML = '';
@@ -180,20 +159,16 @@
       const msg = (state.lives > 0 ? `Te quedan ${state.lives} intento(s).` : `No te quedan más intentos.`);
       const onRetry = () => {
         closeModal();
-        if (isSoftFail && state.lives > 0) {
-            renderNode('node_secret_choice');
-        } else if(state.lives > 0) {
-            resetToStart();
-        } else {
-            resetGameFull();
-        }
+        if (isSoftFail && state.lives > 0) { renderNode('node_secret_choice'); }
+        else if(state.lives > 0) { resetToStart(); }
+        else { resetGameFull(); }
       };
       showModal('-- MISIÓN COMPROMETIDA --', msg, onRetry);
     }
 
     function handleSuccess(node){
-      try{ AUDIO.mystery.pause(); } catch(e){}
-      try{ AUDIO.success.currentTime = 0; AUDIO.success.play().catch(()=>{});}catch(e){}
+      try { AUDIO.mystery.pause(); } catch(e){}
+      try { AUDIO.success.currentTime = 0; AUDIO.success.play().catch(()=>{}); } catch(e){}
       storyEl.innerHTML = `<div class="final-title">¡PAQUETE RECUPERADO!</div><div style="white-space:pre-line">${node.text}</div>`;
       optionsEl.innerHTML = '';
       giftBg.style.backgroundImage = `url('${GIFT_IMAGE_URL}')`;
@@ -206,13 +181,47 @@
     function updateLives(){ heartsEl.textContent = '❤️'.repeat(state.lives) + (state.lives>0 ? '🤍'.repeat(3-state.lives) : ''); }
     function resetToStart(){ renderNode('start'); }
     function resetGameFull(){
-      state.lives = 3; updateLives(); giftBg.classList.remove('reveal'); stopConfetti();
-      try{ AUDIO.success.pause(); AUDIO.success.currentTime = 0;}catch(e){}
-      state.startedSound = false; renderNode('start');
+      state.lives = 3;
+      updateLives();
+      giftBg.classList.remove('reveal');
+      stopConfetti();
+      try { AUDIO.mystery.currentTime = 0; } catch(e) {}
+      try { AUDIO.success.pause(); AUDIO.success.currentTime = 0; } catch(e) {}
+      state.startedSound = false;
+      renderNode('start');
     }
 
     function showModal(title,msg,onRetry){ modalTitle.textContent=title; modalMsg.textContent=msg; modal.classList.add('show'); modalRetry.onclick = ()=> onRetry(); }
     function closeModal(){ modal.classList.remove('show'); }
+
+    // Confetti
+    let confettiRAF = null; const confettiPieces=[];
+    function startConfetti(){
+      const canvas=confCanvas, ctx=canvas.getContext('2d');
+      function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
+      resize(); window.addEventListener('resize',resize);
+      confettiPieces.length=0;
+      const colors=['#f59e0b','#f97316','#e11d48','#fde68a','#fff'];
+      for(let i=0;i<140;i++) confettiPieces.push({x:Math.random()*canvas.width,y:Math.random()*-canvas.height,vy:2+Math.random()*4,angle:Math.random()*360,r:2+Math.random()*7,c:colors[Math.floor(Math.random()*colors.length)]});
+      let t=0;
+      function frame(){
+        t++; ctx.clearRect(0,0,canvas.width,canvas.height);
+        confettiPieces.forEach(p=>{
+          p.x+=Math.sin((p.y+t)/20)*1.5; p.y+=p.vy;
+          ctx.fillStyle=p.c; ctx.save(); ctx.translate(p.x,p.y);
+          ctx.rotate((p.angle+t/3)*Math.PI/180);
+          ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*1.6); ctx.restore();
+          if(p.y>canvas.height+20){p.y=-20;p.x=Math.random()*canvas.width}
+        });
+        confettiRAF = requestAnimationFrame(frame);
+      }
+      confettiRAF = requestAnimationFrame(frame);
+    }
+    function stopConfetti(){
+      if(confettiRAF) cancelAnimationFrame(confettiRAF);
+      const ctx=confCanvas.getContext('2d');
+      ctx.clearRect(0,0,confCanvas.width,confCanvas.height);
+    }
 
     // Init
     document.getElementById('main-title').textContent = `MISIÓN: CUMPLEAÑOS ${AGENT_NAME.toUpperCase()}`;
@@ -221,6 +230,3 @@
   </script>
 </body>
 </html>
-
-
-
