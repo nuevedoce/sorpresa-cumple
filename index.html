@@ -66,10 +66,11 @@
 
     // ---------- RECURSOS LOCALES (Sonidos) ----------
     const AUDIO = {
-      mystery: new Audio('./audio/mystery.mp3'),
-      fail: new Audio('./audio/fail.mp3'),
-      success: new Audio('./audio/success.mp3')
-    };
+  mystery: new Audio('./audio/mystery.mp3'),
+  fail: new Audio('./audio/fail.mp3'),
+  correct: new Audio('./audio/correct.mp3'), // Antes 'success'
+  egypt: new Audio('./audio/egypt.mp3')      // Nuevo sonido final
+};
     AUDIO.mystery.loop = true;
     
     // ---------- NODOS DE LA AVENTURA PERSONALIZADA ----------
@@ -141,17 +142,24 @@
     }
 
     function onChoose(opt){
-      if(!state.startedSound){
-        try{ AUDIO.mystery.play().catch(()=>{}); }catch(e){}
-        state.startedSound = true;
-      }
-      const targetNode = NODES[opt.next];
-      if(state.current === 'node3' && (opt.next === 'fail_perfume' || opt.next === 'fail_paracaidas')) {
-          handleFail(targetNode, true);
-      } else if (targetNode) {
-          renderNode(opt.next);
-      }
-    }
+  if(!state.startedSound){
+    try{ AUDIO.mystery.play().catch(()=>{}); }catch(e){}
+    state.startedSound = true;
+  }
+  const targetNode = NODES[opt.next];
+
+  // AÑADIMOS ESTA LÓGICA
+  // Si el próximo paso NO es un fallo, es un acierto
+  if (!targetNode.fail) {
+    try { AUDIO.correct.currentTime = 0; AUDIO.correct.play().catch(()=>{}); } catch(e){}
+  }
+
+  if(state.current === 'node3' && (opt.next === 'fail_perfume' || opt.next === 'fail_paracaidas')) {
+      handleFail(targetNode, true);
+  } else if (targetNode) {
+      renderNode(opt.next);
+  }
+}
 
     function handleFail(node, isSoftFail = false){
       try{ AUDIO.fail.currentTime = 0; AUDIO.fail.play().catch(()=>{});}catch(e){}
@@ -168,7 +176,7 @@
 
     function handleSuccess(node){
       try { AUDIO.mystery.pause(); } catch(e){}
-      try { AUDIO.success.currentTime = 0; AUDIO.success.play().catch(()=>{}); } catch(e){}
+      try { AUDIO.egypt.currentTime = 0; AUDIO.egypt.play().catch(()=>{}); } catch(e){}
       storyEl.innerHTML = `<div class="final-title">¡PAQUETE RECUPERADO!</div><div style="white-space:pre-line">${node.text}</div>`;
       optionsEl.innerHTML = '';
       giftBg.style.backgroundImage = `url('${GIFT_IMAGE_URL}')`;
@@ -230,3 +238,4 @@
   </script>
 </body>
 </html>
+
