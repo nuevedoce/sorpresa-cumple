@@ -164,8 +164,9 @@
     try { AUDIO.correct.currentTime = 0; AUDIO.correct.play().catch(()=>{}); } catch(e){}
   }
 
-  if(state.current === 'node3' && (opt.next === 'fail_perfume' || opt.next === 'fail_paracaidas')) {
-      handleFail(targetNode, true);
+ if(state.current === 'node3' && (opt.next === 'fail_perfume' || opt.next === 'fail_paracaidas')) {
+      renderNode(opt.next);      // <-- AÑADIDO: Muestra la escena del fallo.
+      handleFail(targetNode, true); // Muestra el modal encima.
   } else if (targetNode) {
       renderNode(opt.next);
   }
@@ -272,6 +273,7 @@ document.addEventListener('keydown',(e)=>{ const opts = Array.from(optionsEl.que
   </script>
 </body>
 </html>
+
 
 
 
