@@ -18,13 +18,13 @@
     header{display:flex;align-items:center;justify-content:space-between;gap:12px}
     header h1{font-size:20px;margin:0; color: var(--accent);}
     .lives{font-size:18px}
-    #image-container{text-align: center; margin-bottom: 16px; min-height: 150px;}
+    #image-container{text-align: left; margin-bottom: 16px; min-height: 150px;}
     #image-container img{max-width:80%; max-height: 250px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);}
     .story{margin-top:18px;font-size:16px;line-height:1.5;color:#e6eef8}
     .options{display:flex;flex-direction:column;gap:12px;margin-top:18px}
     .opt{background:transparent;border:2px solid rgba(255,255,255,0.1);padding:12px 14px;border-radius:10px;text-align:left;color:#e6eef8;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;transition: all .2s}
     .opt:hover{transform:translateY(-3px);border-color:var(--accent); background-color: rgba(225, 29, 72, 0.1);}
-    .modal{position:fixed;left:65%;top:40%;transform:translate(-50%, -50%);min-width:260px;max-width:90%;background:rgba(2,6,23,0.95);border-radius:12px;padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.8);z-index:999;display:none; border: 1px solid rgba(255,255,255,0.1);}
+    .modal{position:fixed;left:65%;top:45%;transform:translate(-50%, -50%);min-width:260px;max-width:90%;background:rgba(2,6,23,0.95);border-radius:12px;padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.8);z-index:999;display:none; border: 1px solid rgba(255,255,255,0.1);}
     .modal.show{display:block}
     .btn{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
     .btn.primary{background:var(--accent);color:#fff}
@@ -98,7 +98,7 @@
         image: './img/spa.jpg',
         options: [
           {emoji:'💆',text:'Masajes relajantes',next:'fail_masaje'},
-          {emoji:'✈️',text:'Una experiencia de altos vuelos',next:'node2'}
+          {emoji:'✈️',text:'Una experiencia de alto vuelo',next:'node2'}
         ]
       },
       fail_masaje: { text:`Los masajes fueron tan increíblemente relajantes que te quedaste dormida. Soñaste con la misión, pero al despertar, las pistas se habían enfriado. ¡Misión comprometida!`, image: './img/siesta.gif', fail: true },
@@ -106,8 +106,8 @@
         text: `¡Adrenalina pura! Te entregan un maletín con gadgets de última generación. "Elige tu herramienta, agente". El contenido del maletín determinará tu próximo movimiento.`,
         image: './img/gadgets.jpg',
         options: [
-          {emoji:'🎤',text:'Micrófono de solapa y estabilizador',next:'fail_contenido'},
-          {emoji:'🗺️',text:'Un proyector de mapas holográfico',next:'node3'}
+          {emoji:'🎤',text:'Micrófono y estabilizador',next:'fail_contenido'},
+          {emoji:'🗺️',text:'Un proyector de mapas',next:'node3'}
         ]
       },
       fail_contenido: { text:`El equipo era tan bueno que empezaste a crear contenido ahí mismo. Tu video "Unboxing de gadgets secretos" se hizo viral, pero reveló tu posición al enemigo. ¡Misión comprometida!`, image: './img/youtuber-fail.gif', fail: true },
@@ -126,7 +126,7 @@
         image: './img/mapa-secreto.gif',
         options: [ {emoji:'✨',text:'Seguir el mapa del destino', next:'success'} ]
       },
-      success:{ text:`¡MISIÓN CUMPLIDA, ${AGENT_NAME.toUpperCase()}! \n\nEl verdadero tesoro no era un objeto, sino un sueño. Es hora de sacar esa imagen de tu wishboard y hacerla realidad. Mi amor, ¡nos vamos a Egipto!`, success:true }
+      success:{ text:`¡MISIÓN CUMPLIDA, ${AGENT_NAME.toUpperCase()}! \n\nEl verdadero tesoro no era un objeto, sino un sueño. Es hora de sacar esa imagen de tu vision board y hacerla realidad. Mi amor, ¡nos vamos a Egipto!`, success:true }
     };
 
     // ---------- LÓGICA DEL JUEGO ----------
@@ -272,6 +272,7 @@ document.addEventListener('keydown',(e)=>{ const opts = Array.from(optionsEl.que
   </script>
 </body>
 </html>
+
 
 
 
