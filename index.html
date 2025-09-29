@@ -95,7 +95,7 @@
       },
       node1: {
         text: `Excelente. Tu primera pista te lleva a una encrucijada de bienestar. Debes elegir una experiencia para "despejar la mente" antes del verdadero desafío. ¿Qué decides?`,
-        image: './img/spa.jpg',
+        image: './img/relajacion.jpg',
         options: [
           {emoji:'💆',text:'Relajación total',next:'fail_masaje'},
           {emoji:'✈️',text:'¡Adrenalina pura!',next:'node2'}
@@ -119,7 +119,7 @@
           {emoji:'🪂',text:'Un ticket para saltar en paracaídas',next:'fail_paracaidas'}
         ]
       },
-      fail_perfume: { text:`El perfume era tan magnético que un encantador de serpientes te confundió con su musa y no te dejó marchar hasta que le enseñaste tus prohibidos. Perdiste un tiempo valioso. ¡Misión comprometida!`, image: './img/serpiente.gif', fail: true },
+      fail_perfume: { text:`El perfume era tan magnético que un encantador de serpientes te confundió con su musa y no te dejó marchar hasta que le enseñaste tus prohibidos. Perdiste un tiempo valioso. ¡Misión comprometida!`, image: './img/animation.mp4', fail: true },
       fail_paracaidas: { text:`El salto fue increíble, pero aterrizaste en medio de un festival de música beduina. Te coronaron reina del baile y la fiesta duró horas. Divertido, pero... ¡Misión comprometida!`, image: './img/paracaidas-fallo.gif', fail: true },
       node_secret_choice: {
         text: `Un momento... mientras te distraías con los objetos, una nota cayó de tu bolsillo. Es un trozo de mapa antiguo. El proyector reacciona y revela un nuevo camino. Un único destino. El destino que siempre has visualizado.`,
@@ -303,6 +303,7 @@ document.addEventListener('keydown',(e)=>{ const opts = Array.from(optionsEl.que
   </script>
 </body>
 </html>
+
 
 
 
