@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Misión Cumpleaños: Nº34</title>
   <style>
+.hidden {
+  display: none;
+}
     :root{--card-bg: rgba(0,0,0,0.66);--muted:#cbd5e1;--accent:#e11d48}
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;font-family: 'Courier New', Courier, monospace;background:#111827;color:#e6eef8}
@@ -21,7 +24,7 @@
     .options{display:flex;flex-direction:column;gap:12px;margin-top:18px}
     .opt{background:transparent;border:2px solid rgba(255,255,255,0.1);padding:12px 14px;border-radius:10px;text-align:left;color:#e6eef8;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;transition: all .2s}
     .opt:hover{transform:translateY(-3px);border-color:var(--accent); background-color: rgba(225, 29, 72, 0.1);}
-    .modal{position:fixed;left:80%;top:45%;transform:translate(-50%, -50%);min-width:260px;max-width:90%;background:rgba(2,6,23,0.95);border-radius:12px;padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.8);z-index:999;display:none; border: 1px solid rgba(255,255,255,0.1);}
+    .modal{position:fixed;left:60%;top:45%;transform:translate(-50%, -50%);min-width:260px;max-width:90%;background:rgba(2,6,23,0.95);border-radius:12px;padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.8);z-index:999;display:none; border: 1px solid rgba(255,255,255,0.1);}
     .modal.show{display:block}
     .btn{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
     .btn.primary{background:var(--accent);color:#fff}
@@ -30,9 +33,16 @@
   </style>
 </head>
 <body>
+  <div id="splash-screen" class="stage" style="position: fixed; inset: 0; background: #111827; z-index: 1000; transition: opacity 0.5s ease-out;">
+  <div class="card" style="text-align: center;">
+    <h1 style="color: var(--accent); font-size: 24px;">MISIÓN: CUMPLEAÑOS SOFÍA</h1>
+    <p style="font-size: 18px; margin-top: 10px;">Tu aventura está a punto de comenzar...</p>
+    <button id="start-button" class="btn primary" style="margin-top: 20px; font-size: 18px; padding: 12px 24px; cursor: pointer;">Comenzar Misión</button>
+  </div>
+</div>
   <div id="gift-bg" aria-hidden="true"></div>
 
-  <main class="stage" role="main">
+  <main class="stage hidden" role="main">
     <section class="card" aria-live="polite">
       <header>
         <div>
@@ -232,12 +242,37 @@
     }
 
     // Init
-    document.getElementById('main-title').textContent = `MISIÓN: CUMPLEAÑOS ${AGENT_NAME.toUpperCase()}`;
-    updateLives(); renderNode('start');
-    document.addEventListener('keydown',(e)=>{ const opts = Array.from(optionsEl.querySelectorAll('.opt')); if(opts.length && (e.key==='1' || e.key==='2')){ const idx = e.key==='1' ? 0 : 1; const btn = opts[idx]; if(btn) btn.click(); }});
+document.getElementById('main-title').textContent = `MISIÓN: CUMPLEAÑOS ${AGENT_NAME.toUpperCase()}`;
+updateLives();
+
+const startButton = document.getElementById('start-button');
+const splashScreen = document.getElementById('splash-screen');
+const mainContent = document.querySelector('main.stage');
+
+startButton.addEventListener('click', () => {
+  // 1. Iniciar la música (ahora sí está permitido por el clic)
+  try {
+    AUDIO.mystery.play().catch(()=>{});
+  } catch(e) {}
+  state.startedSound = true;
+
+  // 2. Ocultar la pantalla de inicio con una transición
+  splashScreen.style.opacity = '0';
+  setTimeout(() => {
+    splashScreen.style.display = 'none';
+  }, 500); // 500ms, igual que la transición en el CSS
+
+  // 3. Mostrar el contenido principal y empezar la aventura
+  mainContent.classList.remove('hidden');
+  mainContent.style.display = 'flex'; // Aseguramos que se muestre como flex
+  renderNode('start');
+});
+
+document.addEventListener('keydown',(e)=>{ const opts = Array.from(optionsEl.querySelectorAll('.opt')); if(opts.length && (e.key==='1' || e.key==='2')){ const idx = e.key==='1' ? 0 : 1; const btn = opts[idx]; if(btn) btn.click(); }});
   </script>
 </body>
 </html>
+
 
 
 
