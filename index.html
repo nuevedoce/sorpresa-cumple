@@ -5,9 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>MISIÓN: 03/10/2025</title>
   <style>
-.hidden {
-  display: none;
-}
     :root{--card-bg: rgba(0,0,0,0.66);--muted:#cbd5e1;--accent:#e11d48}
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;font-family: 'Courier New', Courier, monospace;background:#111827;color:#e6eef8}
@@ -18,28 +15,32 @@
     header{display:flex;align-items:center;justify-content:space-between;gap:12px}
     header h1{font-size:20px;margin:0; color: var(--accent);}
     .lives{font-size:18px}
-    #image-container{text-align: left; margin-bottom: 16px; min-height: 150px;}
+    #image-container{text-align: center; margin-bottom: 16px; min-height: 150px;} /* CORREGIDO: centrado para mejor visualización */
     #image-container img{max-width:80%; max-height: 250px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);}
     .story{margin-top:18px;font-size:16px;line-height:1.5;color:#e6eef8}
     .options{display:flex;flex-direction:column;gap:12px;margin-top:18px}
     .opt{background:transparent;border:2px solid rgba(255,255,255,0.1);padding:12px 14px;border-radius:10px;text-align:left;color:#e6eef8;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;transition: all .2s}
     .opt:hover{transform:translateY(-3px);border-color:var(--accent); background-color: rgba(225, 29, 72, 0.1);}
-    .modal{position:fixed;left:65%;top:45%;transform:translate(-50%, -50%);min-width:260px;max-width:90%;background:rgba(2,6,23,0.95);border-radius:12px;padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.8);z-index:999;display:none; border: 1px solid rgba(255,255,255,0.1);}
+    .modal{position:fixed;left:50%;top:30%;transform:translate(-50%, -50%);min-width:260px;max-width:90%;background:rgba(2,6,23,0.95);border-radius:12px;padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.8);z-index:999;display:none; border: 1px solid rgba(255,255,255,0.1);}
     .modal.show{display:block}
     .btn{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
     .btn.primary{background:var(--accent);color:#fff}
     canvas.confetti{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:999}
     .final-title{font-size:24px;margin:8px 0; color: var(--accent);}
+    .hidden { display: none; }
+    /* AÑADIDO: Estilo para el velo del modal que bloquea clics */
+    #modal-overlay { position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.7); z-index: 998; }
   </style>
 </head>
 <body>
   <div id="splash-screen" class="stage" style="position: fixed; inset: 0; background: #111827; z-index: 1000; transition: opacity 0.5s ease-out;">
-  <div class="card" style="text-align: center;">
-    <h1 style="color: var(--accent); font-size: 24px;">MISIÓN: 03/10/2025</h1>
-    <p style="font-size: 18px; margin-top: 10px;">Tu aventura está a punto de comenzar...</p>
-    <button id="start-button" class="btn primary" style="margin-top: 20px; font-size: 18px; padding: 12px 24px; cursor: pointer;">Comenzar Misión</button>
+    <div class="card" style="text-align: center;">
+      <h1 style="color: var(--accent); font-size: 24px;">MISIÓN: 03/10/2025</h1>
+      <p style="font-size: 18px; margin-top: 10px;">Tu aventura está a punto de comenzar...</p>
+      <button id="start-button" class="btn primary" style="margin-top: 20px; font-size: 18px; padding: 12px 24px; cursor: pointer;">Comenzar Misión</button>
+    </div>
   </div>
-</div>
+  
   <div id="gift-bg" aria-hidden="true"></div>
 
   <main class="stage hidden" role="main">
@@ -51,14 +52,14 @@
         </div>
         <div class="lives">Intentos: <span id="hearts">❤️❤️❤️</span></div>
       </header>
-
-      <div id="image-container"></div>
       <article class="story" id="story">Iniciando sistema...</article>
+      <div id="image-container"></div>
       <div class="options" id="options" role="list"></div>
       <div class="footer" style="margin-top:18px;color:#cbd5e1;font-size:13px; text-align: center;">Este mensaje se autodestruirá... eventualmente. 😉</div>
     </section>
   </main>
 
+  <div id="modal-overlay" class="hidden"></div>
   <div id="modal" class="modal" role="dialog" aria-modal="true">
     <h3 id="modal-title">-- MISIÓN COMPROMETIDA --</h3>
     <p id="modal-msg">Mensaje</p>
@@ -76,48 +77,36 @@
 
     // ---------- RECURSOS LOCALES (Sonidos) ----------
     const AUDIO = {
-  mystery: new Audio('./audio/mystery.mp3'),
-  fail: new Audio('./audio/fail.mp3'),
-  correct: new Audio('./audio/correct.mp3'), // Antes 'success'
-  egypt: new Audio('./audio/egypt.mp3')      // Nuevo sonido final
-};
+      mystery: new Audio('./audio/mystery.mp3'),
+      fail: new Audio('./audio/fail.mp3'),
+      correct: new Audio('./audio/correct.mp3'),
+      egypt: new Audio('./audio/egypt.mp3')
+    };
     AUDIO.mystery.loop = true;
     
-    // ---------- NODOS DE LA AVENTURA PERSONALIZADA ----------
+    // ---------- NODOS DE LA AVENTURA ----------
     const NODES = {
       start: {
         text: `¡Feliz cumpleaños, mi agente favorita!. Hoy, tu misión es descifrar una serie de pistas para encontrar tu verdadera sorpresa. Pero cuidado, el camino está lleno de tentaciones encantadoras. ¿Lista para empezar, ${AGENT_NAME}?`,
         image: './img/agente-portada.gif',
-        options: [
-          {emoji:'😎',text:'Misión aceptada',next:'node1'},
-          {emoji:'🤨',text:'¿De qué va todo esto?',next:'node1'}
-        ]
+        options: [ {emoji:'😎',text:'Misión aceptada',next:'node1'}, {emoji:'🤨',text:'¿De qué va todo esto?',next:'node1'} ]
       },
       node1: {
         text: `Excelente. Tu primera pista te lleva a una encrucijada de bienestar. Debes elegir una experiencia para "despejar la mente" antes del verdadero desafío. ¿Qué decides?`,
         image: './img/relajacion.jpg',
-        options: [
-          {emoji:'💆',text:'Relajación total',next:'fail_masaje'},
-          {emoji:'✈️',text:'¡Adrenalina pura!',next:'node2'}
-        ]
+        options: [ {emoji:'💆',text:'Relajación total',next:'fail_masaje'}, {emoji:'✈️',text:'¡Adrenalina pura!',next:'node2'} ]
       },
       fail_masaje: { text:`Los masajes fueron tan increíblemente relajantes que te quedaste dormida. Soñaste con la misión, pero al despertar, las pistas habían desaparecido. ¡Misión comprometida!`, image: './img/siesta.gif', fail: true },
       node2: {
         text: `Modo Adrenalina ON. Te entregan un maletín con dispositivos de última generación. "Elige tu herramienta, agente" te susurra una voz al oído. Tu elección determinará el próximo movimiento.`,
         image: './img/gadgets.jpg',
-        options: [
-          {emoji:'🎤',text:'Micrófono y estabilizador',next:'fail_contenido'},
-          {emoji:'🗺️',text:'Un proyector de mapas',next:'node3'}
-        ]
+        options: [ {emoji:'🎤',text:'Micrófono y estabilizador',next:'fail_contenido'}, {emoji:'🗺️',text:'Un proyector de mapas',next:'node3'} ]
       },
       fail_contenido: { text:`El equipo era tan bueno que empezaste a crear contenido ahí mismo. Tu video "Pasos prohibidos" se hizo viral en TikTok, pero reveló tu posición al enemigo. ¡Misión comprometida!`, image: './img/animation (2).gif', fail: true },
       node3: {
         text: `El proyector muestra el camino hacia un bazar misterioso. "Elige entre el aroma del desierto o la emoción del cielo", te susurra una voz al oído. Dos objetos brillan sobre el mostrador: un frasco exótico y un ticket dorado.`,
         image: './img/bazar.jpg',
-        options: [
-          {emoji:'🧴',text:'Un perfume árabe',next:'fail_perfume'},
-          {emoji:'🪂',text:'Un ticket para saltar en paracaídas',next:'fail_paracaidas'}
-        ]
+        options: [ {emoji:'🧴',text:'Un perfume árabe',next:'fail_perfume'}, {emoji:'🪂',text:'Un ticket para saltar en paracaídas',next:'fail_paracaidas'} ]
       },
       fail_perfume: { text:`El perfume era tan magnético que un encantador de serpientes te confundió con su musa y no te dejó marchar hasta que le enseñaste tus encantos. Perdiste un tiempo valioso. ¡Misión comprometida!`, image: './img/animation.gif', fail: true },
       fail_paracaidas: { text:`El salto fue increíble, pero aterrizaste en medio de un festival de música beduina. Te coronaron reina del baile y la fiesta duró horas. Divertido, pero... ¡Misión comprometida!`, image: './img/animation (1).gif', fail: true },
@@ -132,7 +121,7 @@
     // ---------- LÓGICA DEL JUEGO ----------
     let state = {current:'start',lives:3,startedSound:false};
     const storyEl = document.getElementById('story'), optionsEl = document.getElementById('options'), heartsEl = document.getElementById('hearts'), imageContainerEl = document.getElementById('image-container');
-    const giftBg = document.getElementById('gift-bg'), modal = document.getElementById('modal'), modalTitle = document.getElementById('modal-title'), modalMsg = document.getElementById('modal-msg'), modalRetry = document.getElementById('modal-retry');
+    const giftBg = document.getElementById('gift-bg'), modal = document.getElementById('modal'), modalTitle = document.getElementById('modal-title'), modalMsg = document.getElementById('modal-msg'), modalRetry = document.getElementById('modal-retry'), modalOverlay = document.getElementById('modal-overlay');
     const confCanvas = document.getElementById('cconf');
     let finalChoicesState = { perfume: false, paracaidas: false };
 
@@ -148,68 +137,61 @@
           b.addEventListener('click', ()=> onChoose(opt)); optionsEl.appendChild(b);
         });
       } else {
-        if(node.fail) handleFail(node); else if(node.success) handleSuccess(node);
+        // CORREGIDO: Llamada a handleFail desde aquí si un nodo no tiene opciones y es de fallo
+        if(node.fail) {
+             // Este caso ya no debería ocurrir si la lógica de onChoose es correcta, pero es una salvaguarda
+             handleFail(node);
+        } else if(node.success) {
+             handleSuccess(node);
+        }
       }
     }
 
-  // REEMPLAZA TU FUNCIÓN onChoose ENTERA CON ESTA
-function onChoose(opt){
-  if(!state.startedSound){
-    try{ AUDIO.mystery.play().catch(()=>{}); }catch(e){}
-    state.startedSound = true;
-  }
-  const targetNode = NODES[opt.next];
+    // --- FUNCIÓN onChoose COMPLETAMENTE CORREGIDA ---
+    function onChoose(opt){
+      if(!state.startedSound){
+        try{ AUDIO.mystery.play().catch(()=>{}); }catch(e){}
+        state.startedSound = true;
+      }
+      const targetNode = NODES[opt.next];
 
-  // Lógica de acierto para el resto del juego
-  if (!targetNode.fail) {
-    try { AUDIO.correct.currentTime = 0; AUDIO.correct.play().catch(()=>{}); } catch(e){}
-  }
-
-  // --- LÓGICA ESPECIAL PARA EL PUZLE FINAL ---
-  if(state.current === 'node3') {
-    // Marcamos la opción elegida como "vista"
-    if (opt.next === 'fail_perfume') finalChoicesState.perfume = true;
-    if (opt.next === 'fail_paracaidas') finalChoicesState.paracaidas = true;
-
-    // Mostramos la pantalla del "fallo" que acaba de elegir
-    renderNode(opt.next);
-
-    // Comprobamos si ya ha visto las DOS opciones
-    if (finalChoicesState.perfume && finalChoicesState.paracaidas) {
-      // Si ya ha visto las dos, mostramos el modal que lleva al camino secreto
-      setTimeout(() => { // Un pequeño retardo para que pueda leer el mensaje del fallo
-        showModal(
-          '¡Pistas Descubiertas!', 
-          'Has explorado ambas posibilidades... y al hacerlo, has revelado un camino oculto.', 
-          () => { closeModal(); renderNode('node_secret_choice'); }
-        );
-      }, 2500); // 2.5 segundos de retardo
-    } else {
-      // Si todavía falta una por ver, mostramos un modal que le devuelve al bazar
-      setTimeout(() => {
-        showModal(
-          'Pista Incorrecta...', 
-          'Interesante... pero parece que este no es el camino. Debes volver a intentarlo.', 
-          () => { closeModal(); renderNode('node3'); }
-        );
-      }, 2500);
+      if (!targetNode.fail) {
+        try { AUDIO.correct.currentTime = 0; AUDIO.correct.play().catch(()=>{}); } catch(e){}
+      }
+      
+      if(state.current === 'node3') {
+        if (opt.next === 'fail_perfume') finalChoicesState.perfume = true;
+        if (opt.next === 'fail_paracaidas') finalChoicesState.paracaidas = true;
+        
+        renderNode(opt.next); // Muestra la pantalla de fallo
+        
+        if (finalChoicesState.perfume && finalChoicesState.paracaidas) {
+          setTimeout(() => {
+            showModal('¡Pistas Descubiertas!', 'Has explorado ambas posibilidades... y al hacerlo, has revelado un camino oculto.', () => { closeModal(); renderNode('node_secret_choice'); });
+          }, 2500);
+        } else {
+          setTimeout(() => {
+            showModal('Pista Incorrecta...', 'Interesante... pero parece que este no es el camino. Debes volver a intentarlo.', () => { closeModal(); renderNode('node3'); });
+          }, 2500);
+        }
+      } 
+      else if (targetNode.fail) {
+        // **ERROR 1 CORREGIDO AQUÍ**
+        renderNode(opt.next);   // 1. Muestra la pantalla de error
+        handleFail(targetNode); // 2. Muestra el modal encima
+      } 
+      else if (targetNode) {
+        renderNode(opt.next);
+      }
     }
-  } 
-  // --- FIN DE LA LÓGICA ESPECIAL ---
-  else if (targetNode.fail) {
-    handleFail(targetNode);
-  } else if (targetNode) {
-    renderNode(opt.next);
-  }
-}
-    function handleFail(node, isSoftFail = false){
+
+    function handleFail(node){
       try{ AUDIO.fail.currentTime = 0; AUDIO.fail.play().catch(()=>{});}catch(e){}
       state.lives = Math.max(0, state.lives - 1); updateLives();
       const msg = (state.lives > 0 ? `Te quedan ${state.lives} intento(s).` : `No te quedan más intentos.`);
       const onRetry = () => {
         closeModal();
-        if (isSoftFail && state.lives > 0) { renderNode('node_secret_choice'); }
-        else if(state.lives > 0) { resetToStart(); }
+        if(state.lives > 0) { resetToStart(); }
         else { resetGameFull(); }
       };
       showModal('-- MISIÓN COMPROMETIDA --', msg, onRetry);
@@ -235,13 +217,25 @@ function onChoose(opt){
       giftBg.classList.remove('reveal');
       stopConfetti();
       try { AUDIO.mystery.currentTime = 0; } catch(e) {}
-      try { AUDIO.success.pause(); AUDIO.success.currentTime = 0; } catch(e) {}
+      try { AUDIO.correct.pause(); AUDIO.correct.currentTime = 0; } catch(e) {}
+      try { AUDIO.egypt.pause(); AUDIO.egypt.currentTime = 0; } catch(e) {}
       state.startedSound = false;
+      finalChoicesState = { perfume: false, paracaidas: false }; // Resetea el puzle final
       renderNode('start');
     }
 
-    function showModal(title,msg,onRetry){ modalTitle.textContent=title; modalMsg.textContent=msg; modal.classList.add('show'); modalRetry.onclick = ()=> onRetry(); }
-    function closeModal(){ modal.classList.remove('show'); }
+    // --- FUNCIONES showModal y closeModal CORREGIDAS ---
+    function showModal(title,msg,onRetry){
+      modalOverlay.classList.remove('hidden'); // Muestra el velo
+      modalTitle.textContent=title;
+      modalMsg.textContent=msg;
+      modal.classList.add('show');
+      modalRetry.onclick = ()=> onRetry();
+    }
+    function closeModal(){
+      modalOverlay.classList.add('hidden'); // Oculta el velo
+      modal.classList.remove('show');
+    }
 
     // Confetti
     let confettiRAF = null; const confettiPieces=[];
@@ -273,48 +267,21 @@ function onChoose(opt){
     }
 
     // Init
-document.getElementById('main-title').textContent = `MISIÓN: CUMPLEAÑOS ${AGENT_NAME.toUpperCase()}`;
-updateLives();
-
-const startButton = document.getElementById('start-button');
-const splashScreen = document.getElementById('splash-screen');
-const mainContent = document.querySelector('main.stage');
-
-startButton.addEventListener('click', () => {
-  // 1. Iniciar la música (ahora sí está permitido por el clic)
-  try {
-    AUDIO.mystery.play().catch(()=>{});
-  } catch(e) {}
-  state.startedSound = true;
-
-  // 2. Ocultar la pantalla de inicio con una transición
-  splashScreen.style.opacity = '0';
-  setTimeout(() => {
-    splashScreen.style.display = 'none';
-  }, 500); // 500ms, igual que la transición en el CSS
-
-  // 3. Mostrar el contenido principal y empezar la aventura
-  mainContent.classList.remove('hidden');
-  mainContent.style.display = 'flex'; // Aseguramos que se muestre como flex
-  renderNode('start');
-});
-
-document.addEventListener('keydown',(e)=>{ const opts = Array.from(optionsEl.querySelectorAll('.opt')); if(opts.length && (e.key==='1' || e.key==='2')){ const idx = e.key==='1' ? 0 : 1; const btn = opts[idx]; if(btn) btn.click(); }});
+    document.getElementById('main-title').textContent = `MISIÓN: CUMPLEAÑOS ${AGENT_NAME.toUpperCase()}`;
+    updateLives();
+    const startButton = document.getElementById('start-button');
+    const splashScreen = document.getElementById('splash-screen');
+    const mainContent = document.querySelector('main.stage');
+    startButton.addEventListener('click', () => {
+      try { AUDIO.mystery.play().catch(()=>{}); } catch(e) {}
+      state.startedSound = true;
+      splashScreen.style.opacity = '0';
+      setTimeout(() => { splashScreen.style.display = 'none'; }, 500);
+      mainContent.classList.remove('hidden');
+      mainContent.style.display = 'flex';
+      renderNode('start');
+    });
+    document.addEventListener('keydown',(e)=>{ const opts = Array.from(optionsEl.querySelectorAll('.opt')); if(opts.length && (e.key==='1' || e.key==='2')){ const idx = e.key==='1' ? 0 : 1; const btn = opts[idx]; if(btn) btn.click(); }});
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
