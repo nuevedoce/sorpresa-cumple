@@ -71,7 +71,7 @@
 
   <script>
     // ---------- CONFIGURACIÓN PRINCIPAL ----------
-    const AGENT_NAME = 'Esposita';
+    const AGENT_NAME = '';
     const GIFT_IMAGE_URL = './img/egipto-atardecer.jpg';
 
     // ---------- RECURSOS LOCALES (Sonidos) ----------
@@ -97,9 +97,9 @@
       },
       fail_masaje: { text:`Los masajes fueron tan increíblemente relajantes que te quedaste dormida. Soñaste con la misión, pero al despertar, las pistas habían desaparecido. ¡Misión comprometida!`, image: './img/siesta.gif', fail: true },
       node2: {
-        text: `Modo Adrenalina ON. Te entregan un maletín con dispositivos de última generación. "Elige tu herramienta, agente" te susurra una voz al oído. Tu elección determinará el próximo movimiento.`,
+        text: `Modo Adrenalina ON. Te entregan un maletín con dispositivos de última generación. "Elige tu herramienta, agente". Tu elección determinará el próximo movimiento.`,
         image: './img/gadgets.jpg',
-        options: [ {emoji:'🎤',text:'Micrófono y estabilizador',next:'fail_contenido'}, {emoji:'🗺️',text:'Un proyector de mapas',next:'node3'} ]
+        options: [ {emoji:'🎤',text:'Micrófono + estabilizador para el móvil',next:'fail_contenido'}, {emoji:'🗺️',text:'Un proyector de mapas',next:'node3'} ]
       },
       fail_contenido: { text:`El equipo era tan bueno que empezaste a crear contenido ahí mismo. Tu video "Pasos prohibidos" se hizo viral en TikTok, pero reveló tu posición al enemigo. ¡Misión comprometida!`, image: './img/animation (2).gif', fail: true },
       node3: {
@@ -144,42 +144,43 @@
       }
     }
 
-    function onChoose(opt){
-      if(!state.startedSound){
-        try{ AUDIO.mystery.play().catch(()=>{}); }catch(e){}
-        state.startedSound = true;
-      }
-      const targetNode = NODES[opt.next];
+    // REEMPLAZA TU FUNCIÓN onChoose ENTERA CON ESTA
+function onChoose(opt){
+  if(!state.startedSound){
+    try{ AUDIO.mystery.play().catch(()=>{}); }catch(e){}
+    state.startedSound = true;
+  }
+  const targetNode = NODES[opt.next];
 
-      if (!targetNode.fail) {
-        try { AUDIO.correct.currentTime = 0; AUDIO.correct.play().catch(()=>{}); } catch(e){}
-      }
-      
-      if(state.current === 'node3') {
-        if (opt.next === 'fail_perfume') finalChoicesState.perfume = true;
-        if (opt.next === 'fail_paracaidas') finalChoicesState.paracaidas = true;
-        
-        renderNode(opt.next);
-        
-        if (finalChoicesState.perfume && finalChoicesState.paracaidas) {
-          setTimeout(() => {
-            showModal('¡Pistas Descubiertas!', 'Has explorado ambas posibilidades... y al hacerlo, has revelado un camino oculto.', () => { closeModal(); renderNode('node_secret_choice'); });
-          }, 2500);
-        } else {
-          setTimeout(() => {
-            showModal('Pista Incorrecta...', 'Interesante... pero parece que este no es el camino. Debes volver a intentarlo.', () => { closeModal(); renderNode('node3'); });
-          }, 2500);
-        }
-      } 
-      else if (targetNode.fail) {
-        renderNode(opt.next);
-        handleFail(targetNode);
-      } 
-      else if (targetNode) {
-        renderNode(opt.next);
-      }
+  if (!targetNode.fail) {
+    try { AUDIO.correct.currentTime = 0; AUDIO.correct.play().catch(()=>{}); } catch(e){}
+  }
+  
+  if(state.current === 'node3') {
+    // La lógica especial para el puzle final se mantiene igual
+    if (opt.next === 'fail_perfume') finalChoicesState.perfume = true;
+    if (opt.next === 'fail_paracaidas') finalChoicesState.paracaidas = true;
+    
+    renderNode(opt.next);
+    
+    if (finalChoicesState.perfume && finalChoicesState.paracaidas) {
+      setTimeout(() => {
+        showModal('¡Pistas Descubiertas!', 'Has explorado ambas posibilidades... y al hacerlo, has revelado un camino oculto.', () => { closeModal(); renderNode('node_secret_choice'); });
+      }, 2500);
+    } else {
+      setTimeout(() => {
+        showModal('Pista Incorrecta...', 'Interesante... pero parece que este no es el camino. Debes volver a intentarlo.', () => { closeModal(); renderNode('node3'); });
+      }, 2500);
     }
-
+  } 
+  // ESTA ES LA PARTE CORREGIDA Y SIMPLIFICADA
+  else if (targetNode) {
+    // Para cualquier otra decisión, simplemente mostramos el siguiente nodo.
+    // La función renderNode se encargará de llamar a handleFail si es necesario.
+    renderNode(opt.next);
+  }
+}
+    
     function handleFail(node){
       try{ AUDIO.fail.currentTime = 0; AUDIO.fail.play().catch(()=>{});}catch(e){}
       state.lives = Math.max(0, state.lives - 1); updateLives();
@@ -280,3 +281,4 @@
   </script>
 </body>
 </html>
+
