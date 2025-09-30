@@ -19,12 +19,11 @@
     #image-container img{max-width:80%; max-height: 250px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);}
     .story{margin-top:18px;font-size:16px;line-height:1.5;color:#e6eef8}
     .options{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+    /* AÑADIDO: Clase para deshabilitar clics */
+    .options.no-clicks { pointer-events: none; }
     .opt{background:transparent;border:2px solid rgba(255,255,255,0.1);padding:12px 14px;border-radius:10px;text-align:left;color:#e6eef8;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;transition: all .2s}
     .opt:hover{transform:translateY(-3px);border-color:var(--accent); background-color: rgba(225, 29, 72, 0.1);}
-    .modal{position:fixed;left:50%;top:30%;transform:translate(-50%, -50%);min-width:260px;max-width:90%;background:rgba(2,6,23,0.95);border-radius:12px;padding:18px;z-index:999;display:none; border: 1px solid rgba(255,255,255,0.1);
-      /* CORRECCIÓN OPCIÓN 2: Sombra gigante que actúa como velo */
-      box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.7);
-    }
+    .modal{position:fixed;left:50%;top:30%;transform:translate(-50%, -50%);min-width:260px;max-width:90%;background:rgba(2,6,23,0.95);border-radius:12px;padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.8);z-index:999;display:none; border: 1px solid rgba(255,255,255,0.1);}
     .modal.show{display:block}
     .btn{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
     .btn.primary{background:var(--accent);color:#fff}
@@ -220,13 +219,16 @@
       renderNode('start');
     }
 
+    // --- FUNCIONES showModal y closeModal CORREGIDAS PARA DESHABILITAR BOTONES ---
     function showModal(title,msg,onRetry){
+      optionsEl.classList.add('no-clicks'); // Deshabilita clics en los botones de opción
       modalTitle.textContent=title;
       modalMsg.textContent=msg;
       modal.classList.add('show');
       modalRetry.onclick = ()=> onRetry();
     }
     function closeModal(){
+      optionsEl.classList.remove('no-clicks'); // Rehabilita clics en los botones de opción
       modal.classList.remove('show');
     }
 
