@@ -23,7 +23,7 @@
     .options.no-clicks { pointer-events: none; }
     .opt{background:transparent;border:2px solid rgba(255,255,255,0.1);padding:12px 14px;border-radius:10px;text-align:left;color:#e6eef8;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;transition: all .2s}
     .opt:hover{transform:translateY(-3px);border-color:var(--accent); background-color: rgba(225, 29, 72, 0.1);}
-    .modal{position:fixed;left:50%;top:30%;transform:translate(-50%, -50%);min-width:260px;max-width:90%;background:rgba(2,6,23,0.95);border-radius:12px;padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.8);z-index:999;display:none; border: 1px solid rgba(255,255,255,0.1);}
+    .modal{position:fixed;left:75%;top:40%;transform:translate(-50%, -50%);min-width:260px;max-width:90%;background:rgba(2,6,23,0.95);border-radius:12px;padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.8);z-index:999;display:none; border: 1px solid rgba(255,255,255,0.1);}
     .modal.show{display:block}
     .btn{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
     .btn.primary{background:var(--accent);color:#fff}
@@ -263,7 +263,7 @@ function onChoose(opt){
     }
 
     // Init
-    document.getElementById('main-title').textContent = `MISIÓN: CUMPLEAÑOS ${AGENT_NAME.toUpperCase()}`;
+    document.getElementById('main-title').textContent = `MISIÓN: 03/10/2025 ${AGENT_NAME.toUpperCase()}`;
     updateLives();
     const startButton = document.getElementById('start-button');
     const splashScreen = document.getElementById('splash-screen');
@@ -281,4 +281,5 @@ function onChoose(opt){
   </script>
 </body>
 </html>
+
 
