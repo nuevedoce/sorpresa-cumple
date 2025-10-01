@@ -110,7 +110,7 @@
       fail_perfume: { text:`El perfume era tan magnético que un encantador de serpientes te confundió con su musa y no te dejó ir hasta que le enseñaste tus encantos. Perdiste un tiempo valioso. ¡Misión comprometida!`, image: './img/animation.gif', fail: true },
       fail_paracaidas: { text:`El salto fue increíble, pero aterrizaste en medio de un festival de música beduina. Te coronaron reina del baile y la fiesta duró horas. Divertido, pero... ¡Misión comprometida!`, image: './img/animation (1).gif', fail: true },
       node_secret_choice: {
-        text: `Un momento... mientras te distraías con los objetos, una nota cayó de tu bolsillo. Es un trozo de mapa antiguo. El proyector reacciona y revela un nuevo camino. Un único destino. El destino que siempre has visualizado.`,
+        text: `Un momento... mientras te distraías con los objetos, una nota cayó de tu bolsillo. Es un trozo de mapa antiguo. El proyector reacciona y revela un nuevo camino. Un único destino.`,
         image: './img/mapa-secreto.gif',
         options: [ {emoji:'✨',text:'Seguir el mapa del destino', next:'success'} ]
       },
@@ -213,7 +213,7 @@ function onChoose(opt){
         giftBg.style.backgroundImage = `url('${GIFT_IMAGE_URL}')`;
         giftBg.classList.add('reveal');
         startConfetti();
-      }, 10000); // 10000 milisegundos = 10 segundos
+      }, 7000); // 10000 milisegundos = 10 segundos
     }
 
     function updateLives(){ heartsEl.textContent = '❤️'.repeat(state.lives) + (state.lives>0 ? '🤍'.repeat(3-state.lives) : ''); }
@@ -292,6 +292,7 @@ function onChoose(opt){
   </script>
 </body>
 </html>
+
 
 
 
