@@ -177,7 +177,7 @@ function onChoose(opt){
         // Ahora pasamos el título y el mensaje por separado, como espera la función.
         showModal(
           '¡Pistas Descubiertas!', // Este es el TÍTULO
-          'Has explorado ambas posibilidades. Un nuevo camino se ha revelado.', // Este es el MENSAJE
+          'Has explorado ambas posibilidades.', // Este es el MENSAJE
           () => { closeModal(); renderNode('node_secret_choice'); } // Esta es la ACCIÓN del botón
         );
       }, 2500);
@@ -309,6 +309,7 @@ function onChoose(opt){
   </script>
 </body>
 </html>
+
 
 
 
