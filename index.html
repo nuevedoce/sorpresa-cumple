@@ -48,7 +48,7 @@
       <header>
         <div>
           <h1 id="main-title">MISIÓN: 03/10/2025</h1>
-          <p id="subtitle" class="small" style="color: var(--muted);">Agente, su objetivo le espera. Actúe con sigilo.</p>
+          <p id="subtitle" class="small" style="color: var(--muted);">Agente, su objetivo la espera. Actúe con sigilo.</p>
         </div>
         <div class="lives">Intentos: <span id="hearts">❤️❤️❤️</span></div>
       </header>
@@ -92,10 +92,10 @@
       },
       node1: {
         text: `Excelente. Tu primera pista te lleva a una encrucijada de bienestar. Debes elegir una experiencia para "despejar la mente" antes del verdadero desafío. ¿Qué decides?`,
-        image: './img/relajacion.jpg',
+        image: './img/relajacion1.jpg',
         options: [ {emoji:'💆',text:'Relajación total',next:'fail_masaje'}, {emoji:'✈️',text:'¡Adrenalina pura!',next:'node2'} ]
       },
-      fail_masaje: { text:`Los masajes fueron tan increíblemente relajantes que te quedaste dormida. Soñaste con la misión, pero al despertar, las pistas habían desaparecido. ¡Misión comprometida!`, image: './img/siesta.gif', fail: true },
+      fail_masaje: { text:`Los masajes fueron tan increíblemente relajantes que te quedaste dormida. Soñaste con la misión, pero al despertar, las pistas habían desaparecido. ¡Misión comprometida!`, image: './img/siesta1.gif', fail: true },
       node2: {
         text: `Modo Adrenalina ON. Te entregan un maletín con dispositivos de última generación. "Elige una herramienta, agente". Tu elección determinará el próximo movimiento.`,
         image: './img/gadgets.jpg',
@@ -300,6 +300,7 @@ function onChoose(opt){
   </script>
 </body>
 </html>
+
 
 
 
