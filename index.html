@@ -152,6 +152,7 @@
       }
     }
 
+// REEMPLAZA TU FUNCIÓN onChoose ENTERA CON ESTA
 function onChoose(opt){
   if(!state.startedSound){
     try{ AUDIO.mystery.play().catch(()=>{}); }catch(e){}
@@ -172,18 +173,26 @@ function onChoose(opt){
     
     if (finalChoicesState.perfume && finalChoicesState.paracaidas) {
       setTimeout(() => {
-        showModal('¡Has explorado ambas posibilidades... No quedan más pistas!', () => { closeModal(); renderNode('node_secret_choice'); });
+        // --- CORRECCIÓN AQUÍ ---
+        // Ahora pasamos el título y el mensaje por separado, como espera la función.
+        showModal(
+          '¡Pistas Descubiertas!', // Este es el TÍTULO
+          'Has explorado ambas posibilidades. Un nuevo camino se ha revelado.', // Este es el MENSAJE
+          () => { closeModal(); renderNode('node_secret_choice'); } // Esta es la ACCIÓN del botón
+        );
       }, 2500);
     } else {
       setTimeout(() => {
-        showModal('Pista Incorrecta...', 'Interesante... pero parece que este no es el camino. Debes volver a intentarlo.', () => { closeModal(); renderNode('node3'); });
+        // Esta llamada ya era correcta, pero la mantenemos igual.
+        showModal(
+          'Pista Incorrecta...', 
+          'Interesante... pero parece que este no es el camino. Debes volver a intentarlo.', 
+          () => { closeModal(); renderNode('node3'); }
+        );
       }, 2500);
     }
   } 
-  // ESTA ES LA PARTE CORREGIDA Y SIMPLIFICADA
   else if (targetNode) {
-    // Para cualquier otra decisión, simplemente mostramos el siguiente nodo.
-    // La función renderNode se encargará de llamar a handleFail si es necesario.
     renderNode(opt.next);
   }
 }
@@ -300,6 +309,7 @@ function onChoose(opt){
   </script>
 </body>
 </html>
+
 
 
 
