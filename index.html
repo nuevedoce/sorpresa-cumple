@@ -48,7 +48,7 @@
       <header>
         <div>
           <h1 id="main-title">MISIÓN: 03/10/2025</h1>
-          <p class="small" style="color: var(--muted);">Agente, su objetivo la espera. Actúe con sigilo.</p>
+          <p id="subtitle" class="small" style="color: var(--muted);">Agente, su objetivo le espera. Actúe con sigilo.</p>
         </div>
         <div class="lives">Intentos: <span id="hearts">❤️❤️❤️</span></div>
       </header>
@@ -119,12 +119,20 @@
 
     // ---------- LÓGICA DEL JUEGO ----------
     let state = {current:'start',lives:3,startedSound:false};
-    const storyEl = document.getElementById('story'), optionsEl = document.getElementById('options'), heartsEl = document.getElementById('hearts'), imageContainerEl = document.getElementById('image-container');
+    const storyEl = document.getElementById('story'), optionsEl = document.getElementById('options'), heartsEl = document.getElementById('hearts'), imageContainerEl = document.getElementById('image-container'), subtitleEl = document.getElementById('subtitle');
     const giftBg = document.getElementById('gift-bg'), modal = document.getElementById('modal'), modalTitle = document.getElementById('modal-title'), modalMsg = document.getElementById('modal-msg'), modalRetry = document.getElementById('modal-retry');
     const confCanvas = document.getElementById('cconf');
     let finalChoicesState = { perfume: false, paracaidas: false };
 
     function renderNode(key){
+      // --- LÓGICA AÑADIDA PARA CONTROLAR EL SUBTÍTULO ---
+      if (key === 'start') {
+      subtitleEl.classList.remove('hidden'); // Si es el inicio, lo muestra
+      } else {
+      subtitleEl.classList.add('hidden'); // Si no, lo oculta
+      }
+      // --- FIN DE LA LÓGICA AÑADIDA ---
+      
       state.current = key;
       const node = NODES[key];
       imageContainerEl.innerHTML = node.image ? `<img src="${node.image}" alt="Escena de la aventura">` : '';
@@ -292,6 +300,7 @@ function onChoose(opt){
   </script>
 </body>
 </html>
+
 
 
 
