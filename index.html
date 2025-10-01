@@ -48,7 +48,7 @@
       <header>
         <div>
           <h1 id="main-title">MISIÓN: 03/10/2025</h1>
-          <p class="small" style="color: var(--muted);">Agente, su objetivo le espera. Actúe con sigilo.</p>
+          <p class="small" style="color: var(--muted);">Agente, su objetivo la espera. Actúe con sigilo.</p>
         </div>
         <div class="lives">Intentos: <span id="hearts">❤️❤️❤️</span></div>
       </header>
@@ -86,7 +86,7 @@
     // ---------- NODOS DE LA AVENTURA ----------
     const NODES = {
       start: {
-        text: `¡Feliz cumpleaños, mi agente favorita!. Hoy, tu misión es descifrar una serie de pistas para encontrar tu verdadera sorpresa. Pero cuidado, el camino está lleno de tentaciones encantadoras. ¿Lista para empezar, ${AGENT_NAME}?`,
+        text: `¡Feliz Cumpleaños, mi agente favorita!. Hoy, tu misión es descifrar una serie de pistas para encontrar tu verdadera sorpresa. Pero cuidado, el camino está lleno de tentaciones encantadoras. ¿Lista para empezar, ${AGENT_NAME}?`,
         image: './img/agente-portada.gif',
         options: [ {emoji:'😎',text:'Misión aceptada',next:'node1'}, {emoji:'🤨',text:'¿De qué va todo esto?',next:'node1'} ]
       },
@@ -97,7 +97,7 @@
       },
       fail_masaje: { text:`Los masajes fueron tan increíblemente relajantes que te quedaste dormida. Soñaste con la misión, pero al despertar, las pistas habían desaparecido. ¡Misión comprometida!`, image: './img/siesta.gif', fail: true },
       node2: {
-        text: `Modo Adrenalina ON. Te entregan un maletín con dispositivos de última generación. "Elige tu herramienta, agente". Tu elección determinará el próximo movimiento.`,
+        text: `Modo Adrenalina ON. Te entregan un maletín con dispositivos de última generación. "Elige una herramienta, agente". Tu elección determinará el próximo movimiento.`,
         image: './img/gadgets.jpg',
         options: [ {emoji:'🎤',text:'Micrófono + estabilizador para el móvil',next:'fail_contenido'}, {emoji:'🗺️',text:'Un proyector de mapas',next:'node3'} ]
       },
@@ -107,7 +107,7 @@
         image: './img/bazar.jpg',
         options: [ {emoji:'🧴',text:'Un perfume árabe',next:'fail_perfume'}, {emoji:'🪂',text:'Un ticket para saltar en paracaídas',next:'fail_paracaidas'} ]
       },
-      fail_perfume: { text:`El perfume era tan magnético que un encantador de serpientes te confundió con su musa y no te dejó marchar hasta que le enseñaste tus encantos. Perdiste un tiempo valioso. ¡Misión comprometida!`, image: './img/animation.gif', fail: true },
+      fail_perfume: { text:`El perfume era tan magnético que un encantador de serpientes te confundió con su musa y no te dejó ir hasta que le enseñaste tus encantos. Perdiste un tiempo valioso. ¡Misión comprometida!`, image: './img/animation.gif', fail: true },
       fail_paracaidas: { text:`El salto fue increíble, pero aterrizaste en medio de un festival de música beduina. Te coronaron reina del baile y la fiesta duró horas. Divertido, pero... ¡Misión comprometida!`, image: './img/animation (1).gif', fail: true },
       node_secret_choice: {
         text: `Un momento... mientras te distraías con los objetos, una nota cayó de tu bolsillo. Es un trozo de mapa antiguo. El proyector reacciona y revela un nuevo camino. Un único destino. El destino que siempre has visualizado.`,
@@ -144,7 +144,6 @@
       }
     }
 
-    // REEMPLAZA TU FUNCIÓN onChoose ENTERA CON ESTA
 function onChoose(opt){
   if(!state.startedSound){
     try{ AUDIO.mystery.play().catch(()=>{}); }catch(e){}
@@ -194,15 +193,27 @@ function onChoose(opt){
     }
 
     function handleSuccess(node){
+      // --- PASO 1: Acciones Inmediatas ---
       try { AUDIO.mystery.pause(); } catch(e){}
-      try { AUDIO.egypt.currentTime = 0; AUDIO.egypt.play().catch(()=>{}); } catch(e){}
+      
       storyEl.innerHTML = `<div class="final-title">¡PAQUETE RECUPERADO!</div><div style="white-space:pre-line">${node.text}</div>`;
       optionsEl.innerHTML = '';
-      giftBg.style.backgroundImage = `url('${GIFT_IMAGE_URL}')`;
-      setTimeout(()=> { giftBg.classList.add('reveal'); startConfetti(); }, 120);
-      const btn = document.createElement('button'); btn.className='opt'; btn.innerHTML=`<span class="emoji">🔁</span><span>Jugar de nuevo</span>`;
-      btn.addEventListener('click', ()=> { stopConfetti(); resetGameFull(); });
+      const btn = document.createElement('button');
+      btn.className='opt';
+      btn.innerHTML=`<span class="emoji">🔁</span><span>Jugar de nuevo</span>`;
+      btn.addEventListener('click', ()=> {
+        stopConfetti(); 
+        resetGameFull(); 
+      });
       optionsEl.appendChild(btn);
+
+      // --- PASO 2: Acciones Retrasadas (después de 10 segundos) ---
+      setTimeout(() => {
+        try { AUDIO.egypt.currentTime = 0; AUDIO.egypt.play().catch(()=>{}); } catch(e){}
+        giftBg.style.backgroundImage = `url('${GIFT_IMAGE_URL}')`;
+        giftBg.classList.add('reveal');
+        startConfetti();
+      }, 10000); // 10000 milisegundos = 10 segundos
     }
 
     function updateLives(){ heartsEl.textContent = '❤️'.repeat(state.lives) + (state.lives>0 ? '🤍'.repeat(3-state.lives) : ''); }
@@ -281,6 +292,7 @@ function onChoose(opt){
   </script>
 </body>
 </html>
+
 
 
 
