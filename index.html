@@ -221,7 +221,7 @@ function onChoose(opt){
         giftBg.style.backgroundImage = `url('${GIFT_IMAGE_URL}')`;
         giftBg.classList.add('reveal');
         startConfetti();
-      }, 3000); // 10000 milisegundos = 10 segundos
+      }, 1000); // 1000 milisegundos = 1 segundo
     }
 
     function updateLives(){ heartsEl.textContent = '❤️'.repeat(state.lives) + (state.lives>0 ? '🤍'.repeat(3-state.lives) : ''); }
@@ -300,6 +300,7 @@ function onChoose(opt){
   </script>
 </body>
 </html>
+
 
 
 
