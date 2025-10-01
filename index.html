@@ -110,9 +110,9 @@
       fail_perfume: { text:`El perfume era tan magnético que un encantador de serpientes te confundió con su musa y no te dejó ir hasta que le enseñaste tus encantos. Perdiste un tiempo valioso. ¡Misión comprometida!`, image: './img/animation.gif', fail: true },
       fail_paracaidas: { text:`El salto fue increíble, pero aterrizaste en medio de un festival de música beduina. Te coronaron reina del baile y la fiesta duró horas. Divertido, pero... ¡Misión comprometida!`, image: './img/animation (1).gif', fail: true },
       node_secret_choice: {
-        text: `Un momento... mientras te distraías con los objetos, una nota cayó de tu bolsillo. Es un trozo de mapa antiguo. El proyector reacciona y revela un nuevo camino.`,
+        text: `Un momento... mientras te distraías tirando pasos, una nota cayó de tu bolsillo. Es un trozo de mapa antiguo. El proyector reacciona y revela un camino oculto.`,
         image: './img/mapa-secreto.gif',
-        options: [ {emoji:'✨',text:'Seguir el mapa del destino', next:'success'} ]
+        options: [ {emoji:'✨',text:'¿Dónde me lleva esto?', next:'success'} ]
       },
       success:{ text:`¡MISIÓN CUMPLIDA, ${AGENT_NAME.toUpperCase()}! \n\nEl verdadero tesoro no era un objeto, sino un sueño. Es hora de sacar esa imagen de tu vision board y hacerla realidad. Mi amor, ¡nos vamos a Egipto!`, success:true }
     };
@@ -172,7 +172,7 @@ function onChoose(opt){
     
     if (finalChoicesState.perfume && finalChoicesState.paracaidas) {
       setTimeout(() => {
-        showModal('¡Pistas Descubiertas!', 'Has explorado ambas posibilidades... y al hacerlo, has revelado un camino oculto.', () => { closeModal(); renderNode('node_secret_choice'); });
+        showModal('¡Has explorado ambas posibilidades... No quedan más pistas!', () => { closeModal(); renderNode('node_secret_choice'); });
       }, 2500);
     } else {
       setTimeout(() => {
@@ -300,6 +300,7 @@ function onChoose(opt){
   </script>
 </body>
 </html>
+
 
 
 
