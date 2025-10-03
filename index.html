@@ -13,23 +13,23 @@
     #gift-bg.reveal{filter:blur(0);opacity:1}
     .card {
     /* --- LÍMITES Y DIMENSIONES --- */
-    max-width: 1300px;              /* Límite máximo de ancho para pantallas gigantes */
-    width: 90vw;                    /* Ocupa el 90% del ancho de la pantalla */
-    max-height: 90vh;               /* CRÍTICO: Nunca será más alto que el 90% de la pantalla */
+    max-width: 1300px;
+    width: 90vw;
+    max-height: 90vh;
     
     /* --- ESTILOS Y ESTRUCTURA --- */
-    padding: 2vw;                   /* Espaciado interno relativo al ancho de la pantalla */
+    padding: 2vw;
     border-radius: 14px;
-    background: linear-gradient(180deg, rgba(20,20,30,0.8), rgba(10,10,20,0.9));
-    box-shadow: 0 10px 40px rgba(2,6,23,0.7);
+    background: transparent;  /* <--- CAMBIO 1: Fondo transparente */
+    /* box-shadow: 0 10px 40px rgba(2,6,23,0.7); */ /* <--- CAMBIO 2: Sombra eliminada o comentada */
     position: relative;
     z-index: 2;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.1); /* Este borde ahora es más importante */
 
     /* --- CONTROL DE CONTENIDO --- */
-    display: flex;                  /* Usamos flexbox para controlar mejor el interior */
-    flex-direction: column;         /* Apila los elementos verticalmente */
-    overflow-y: auto;               /* MEDIDA DE SEGURIDAD: Si el contenido se desborda, el scroll aparecerá DENTRO del cuadro */
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
 }
     header{display:flex;align-items:center;justify-content:space-between;gap:12px}
     header h1 {
@@ -369,6 +369,7 @@ function onChoose(opt){
   </script>
 </body>
 </html>
+
 
 
 
