@@ -12,41 +12,51 @@
     #gift-bg{position:fixed;inset:0;background-size:cover;background-position:center;filter:blur(25px);transition:filter 5s ease-out,opacity 1s ease-in;opacity:0;z-index:1;background-color:#111}
     #gift-bg.reveal{filter:blur(0);opacity:1}
     .card {
-    width: 85vw; /* Ocupará el 85% del ancho de la ventana */
-    max-width: 1100px; /* Un límite máximo más generoso en px */
-    padding: 22px;
+    /* --- LÍMITES Y DIMENSIONES --- */
+    max-width: 1300px;              /* Límite máximo de ancho para pantallas gigantes */
+    width: 90vw;                    /* Ocupa el 90% del ancho de la pantalla */
+    max-height: 90vh;               /* CRÍTICO: Nunca será más alto que el 90% de la pantalla */
+    
+    /* --- ESTILOS Y ESTRUCTURA --- */
+    padding: 2vw;                   /* Espaciado interno relativo al ancho de la pantalla */
     border-radius: 14px;
     background: linear-gradient(180deg, rgba(20,20,30,0.8), rgba(10,10,20,0.9));
     box-shadow: 0 10px 40px rgba(2,6,23,0.7);
     position: relative;
     z-index: 2;
     border: 1px solid rgba(255,255,255,0.1);
+
+    /* --- CONTROL DE CONTENIDO --- */
+    display: flex;                  /* Usamos flexbox para controlar mejor el interior */
+    flex-direction: column;         /* Apila los elementos verticalmente */
+    overflow-y: auto;               /* MEDIDA DE SEGURIDAD: Si el contenido se desborda, el scroll aparecerá DENTRO del cuadro */
 }
     header{display:flex;align-items:center;justify-content:space-between;gap:12px}
     header h1 {
-    font-size: clamp(18px, 2.5vw, 28px);
+    font-size: clamp(18px, 2.2vw, 26px); /* Textos ajustados al nuevo tamaño */
     margin: 0;
     color: var(--accent);
 }
     .lives{font-size:18px}
     #image-container{text-align: center; margin-bottom: 16px; min-height: 150px;}
     #image-container img {
-    max-width: 80%;
-    /* max-height: 250px; */
+    max-width: 100%;                /* La imagen puede ocupar todo el ancho de su contenedor */
+    max-height: 40vh;               /* Limita la altura de la imagen al 40% de la altura de la pantalla */
     height: auto;
+    object-fit: contain;            /* Asegura que la imagen se vea completa sin deformarse */
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.5);
 }
     .story {
     margin-top: 18px;
-    font-size: clamp(15px, 2vw, 22px);
+    font-size: clamp(15px, 1.8vw, 20px); /* Textos ajustados al nuevo tamaño */
     line-height: 1.6;
     color: #e6eef8;
 }
     .opt {
     background: transparent;
     border: 2px solid rgba(255,255,255,0.1);
-    padding: clamp(10px, 1.5vw, 16px) clamp(12px, 2vw, 20px);
+    padding: clamp(10px, 1.2vw, 15px) clamp(12px, 1.8vw, 18px);
     border-radius: 10px;
     text-align: left;
     color: #e6eef8;
@@ -56,7 +66,18 @@
     align-items: center;
     gap: 10px;
     transition: all .2s;
-    font-size: clamp(14px, 1.8vw, 20px);
+    font-size: clamp(14px, 1.6vw, 18px); /* Textos ajustados al nuevo tamaño */
+}
+    /* --- Importante: Asegura que la sección de la historia pueda usar el espacio sobrante --- */
+.story, .options, .footer {
+    flex-shrink: 0;
+}
+#image-container {
+    flex-shrink: 0;
+}
+.options {
+    margin-top: auto; /* EMPUJA LAS OPCIONES HACIA ABAJO */
+    padding-top: 20px;
 }
     /* AÑADIDO: Clase para deshabilitar clics */
     .options.no-clicks { pointer-events: none; }
@@ -348,6 +369,7 @@ function onChoose(opt){
   </script>
 </body>
 </html>
+
 
 
 
