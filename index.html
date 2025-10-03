@@ -11,14 +11,53 @@
     .stage{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;position:relative;overflow:hidden}
     #gift-bg{position:fixed;inset:0;background-size:cover;background-position:center;filter:blur(25px);transition:filter 5s ease-out,opacity 1s ease-in;opacity:0;z-index:1;background-color:#111}
     #gift-bg.reveal{filter:blur(0);opacity:1}
-    .card{width:100%;max-width:900px;padding:22px;border-radius:14px;background:linear-gradient(180deg, rgba(20,20,30,0.8), rgba(10,10,20,0.9));box-shadow:0 10px 40px rgba(2,6,23,0.7);position:relative;z-index:2; border: 1px solid rgba(255,255,255,0.1);}
+    .card {
+    width: 85vw; /* Ocupará el 85% del ancho de la ventana */
+    max-width: 1100px; /* Un límite máximo más generoso en px */
+    padding: 22px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(20,20,30,0.8), rgba(10,10,20,0.9));
+    box-shadow: 0 10px 40px rgba(2,6,23,0.7);
+    position: relative;
+    z-index: 2;
+    border: 1px solid rgba(255,255,255,0.1);
+}
     header{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    header h1{font-size:20px;margin:0; color: var(--accent);}
+    header h1 {
+    font-size: clamp(18px, 2.5vw, 28px);
+    margin: 0;
+    color: var(--accent);
+}
     .lives{font-size:18px}
     #image-container{text-align: center; margin-bottom: 16px; min-height: 150px;}
-    #image-container img{max-width:80%; max-height: 250px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);}
-    .story{margin-top:18px;font-size:16px;line-height:1.5;color:#e6eef8}
-    .options{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+    #image-container img {
+    max-width: 80%;
+    /* max-height: 250px; */
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+    .story {
+    margin-top: 18px;
+    font-size: clamp(15px, 2vw, 22px);
+    line-height: 1.6;
+    color: #e6eef8;
+}
+    .opt {
+    background: transparent;
+    border: 2px solid rgba(255,255,255,0.1);
+    padding: clamp(10px, 1.5vw, 16px) clamp(12px, 2vw, 20px);
+    border-radius: 10px;
+    text-align: left;
+    color: #e6eef8;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all .2s;
+    font-size: clamp(14px, 1.8vw, 20px);
+}
     /* AÑADIDO: Clase para deshabilitar clics */
     .options.no-clicks { pointer-events: none; }
     .opt{background:transparent;border:2px solid rgba(255,255,255,0.1);padding:12px 14px;border-radius:10px;text-align:left;color:#e6eef8;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;transition: all .2s}
@@ -309,6 +348,7 @@ function onChoose(opt){
   </script>
 </body>
 </html>
+
 
 
 
